@@ -757,7 +757,7 @@ export default function WorldTourNavigator() {
         <SidebarHeader>
           <div className="flex items-center gap-3 p-2">
             <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
-            <h1 className="text-2xl font-bold font-headline">
+            <h1 className="text-2xl font-bold">
               TRIPFORGE
             </h1>
           </div>
@@ -1176,3 +1176,5 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
+
+    
