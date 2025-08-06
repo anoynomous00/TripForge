@@ -376,15 +376,7 @@ function ZoomcarBookingCard({ vehicleId }: { vehicleId: string | undefined }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6 text-center">
-         <Image 
-            src={`https://placehold.co/400x200.png`} 
-            data-ai-hint={`${selectedVehicle.name} car`}
-            alt={selectedVehicle.name}
-            width={400}
-            height={200}
-            className="rounded-lg object-cover w-full aspect-video mx-auto"
-         />
-         <p className="text-muted-foreground">
+         <p className="text-muted-foreground pt-4">
            Click the button below to browse available vehicles and finalize your rental on Zoomcar.com.
          </p>
       </CardContent>
