@@ -384,6 +384,77 @@ function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | und
   )
 }
 
+function StudentOfferCard() {
+  const [idCard, setIdCard] = React.useState<File | null>(null);
+  const [preview, setPreview] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setIdCard(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><BadgePercent /> Student Offer</CardTitle>
+        <CardDescription>Get 30% off your next trip by uploading your student ID card.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Input
+          type="file"
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+        />
+        {preview ? (
+          <div className="relative group">
+            <Image
+              src={preview}
+              alt="ID card preview"
+              width={400}
+              height={250}
+              className="rounded-lg object-cover w-full aspect-[16/10]"
+            />
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button variant="secondary" onClick={handleUploadClick}>Change Photo</Button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 text-center h-48 cursor-pointer hover:bg-accent/50 transition-colors"
+            onClick={handleUploadClick}
+          >
+            <Camera className="w-10 h-10 text-muted-foreground mb-2" />
+            <p className="font-semibold">Take a Snapshot</p>
+            <p className="text-sm text-muted-foreground">or Upload ID Card</p>
+          </div>
+        )}
+         <div className="space-y-2">
+            <Label htmlFor="college-name">College Name</Label>
+            <Input id="college-name" placeholder="Enter your college name" />
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button disabled={!idCard}>Claim 30% Off</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+
+
 function HandicapOfferCard() {
   const [certificate, setCertificate] = React.useState<File | null>(null);
   const [preview, setPreview] = React.useState<string | null>(null);
@@ -1025,25 +1096,7 @@ export default function WorldTourNavigator() {
 
           {activeView === 'offers' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><BadgePercent /> Student Offer</CardTitle>
-                        <CardDescription>Get 30% off your next trip by verifying your student status.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="college-name">College Name</Label>
-                            <Input id="college-name" placeholder="Enter your college name" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="mobile-number">Mobile Number</Label>
-                            <Input id="mobile-number" placeholder="Enter your mobile number" />
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button>Claim 30% Off</Button>
-                    </CardFooter>
-                </Card>
+                <StudentOfferCard />
                 <HandicapOfferCard />
             </div>
           )}
