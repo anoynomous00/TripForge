@@ -105,17 +105,17 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const vehicles = [
-  { id: 'bike', name: 'Bike', icon: Bike, image: 'https://placehold.co/120x90.png', hint: 'motorcycle road trip' },
-  { id: 'scooty', name: 'Scooty', icon: Bike, image: 'https://placehold.co/120x90.png', hint: 'scooter city' },
-  { id: 'swift', name: 'Swift', icon: Car, image: 'https://placehold.co/120x90.png', hint: 'white hatchback car' },
-  { id: 'etios', name: 'Etios', icon: Car, image: 'https://placehold.co/120x90.png', hint: 'white sedan car' },
-  { id: 'eeco', name: 'Eeco', icon: Car, image: 'https://placehold.co/120x90.png', hint: 'white utility van' },
-  { id: 'ertiga', name: 'Ertiga', icon: Car, image: 'https://placehold.co/120x90.png', hint: 'blue mpv car' },
-  { id: 'innova', name: 'Innova', icon: Car, image: 'https://placehold.co/120x90.png', hint: 'black suv car' },
-  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, image: 'https://placehold.co/120x90.png', hint: 'white minibus' },
-  { id: '18-seater', name: '18-Seater Bus', icon: Bus, image: 'https://placehold.co/120x90.png', hint: 'small tourist bus' },
-  { id: '33-seater', name: '33-Seater Bus', icon: Bus, image: 'https://placehold.co/120x90.png', hint: 'large coach bus' },
-  { id: 'flight', name: 'Flight', icon: Plane, image: 'https://placehold.co/120x90.png', hint: 'airplane window view' },
+  { id: 'bike', name: 'Bike', icon: Bike, image: 'https://placehold.co/120x91.png', hint: 'motorcycle road trip' },
+  { id: 'scooty', name: 'Scooty', icon: Bike, image: 'https://placehold.co/120x92.png', hint: 'scooter city' },
+  { id: 'swift', name: 'Swift', icon: Car, image: 'https://placehold.co/120x93.png', hint: 'white hatchback car' },
+  { id: 'etios', name: 'Etios', icon: Car, image: 'https://placehold.co/120x94.png', hint: 'white sedan car' },
+  { id: 'eeco', name: 'Eeco', icon: Car, image: 'https://placehold.co/120x95.png', hint: 'white utility van' },
+  { id: 'ertiga', name: 'Ertiga', icon: Car, image: 'https://placehold.co/120x96.png', hint: 'blue mpv car' },
+  { id: 'innova', name: 'Innova', icon: Car, image: 'https://placehold.co/120x97.png', hint: 'black suv car' },
+  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, image: 'https://placehold.co/120x98.png', hint: 'white minibus' },
+  { id: '18-seater', name: '18-Seater Bus', icon: Bus, image: 'https://placehold.co/120x99.png', hint: 'small tourist bus' },
+  { id: '33-seater', name: '33-Seater Bus', icon: Bus, image: 'https://placehold.co/120x100.png', hint: 'large coach bus' },
+  { id: 'flight', name: 'Flight', icon: Plane, image: 'https://placehold.co/120x101.png', hint: 'airplane window view' },
 ];
 
 
