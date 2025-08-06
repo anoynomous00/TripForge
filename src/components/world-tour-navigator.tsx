@@ -41,6 +41,8 @@ import {
   Plane,
   Calculator,
   CalendarDays,
+  Camera,
+  Upload,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -310,6 +312,72 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
         </CardContent>
     </Card>
   )
+}
+
+function HandicapOfferCard() {
+  const [certificate, setCertificate] = React.useState<File | null>(null);
+  const [preview, setPreview] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCertificate(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><BadgePercent /> Offer for Specially Abled</CardTitle>
+        <CardDescription>Get 50% off by uploading your disability certificate.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Input
+          type="file"
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+        />
+        {preview ? (
+          <div className="relative group">
+            <Image
+              src={preview}
+              alt="Certificate preview"
+              width={400}
+              height={250}
+              className="rounded-lg object-cover w-full aspect-[16/10]"
+            />
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button variant="secondary" onClick={handleUploadClick}>Change Photo</Button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 text-center h-48 cursor-pointer hover:bg-accent/50 transition-colors"
+            onClick={handleUploadClick}
+          >
+            <Camera className="w-10 h-10 text-muted-foreground mb-2" />
+            <p className="font-semibold">Take a Snapshot</p>
+            <p className="text-sm text-muted-foreground">or Upload Certificate</p>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter>
+        <Button disabled={!certificate}>Claim 50% Off</Button>
+      </CardFooter>
+    </Card>
+  );
 }
 
 
@@ -903,13 +971,7 @@ export default function WorldTourNavigator() {
                         <Button>Claim 30% Off</Button>
                     </CardFooter>
                 </Card>
-                <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
-                    <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="Happy students" className="mb-6 rounded-lg" data-ai-hint="happy students travel"/>
-                    <h2 className="text-2xl font-bold font-headline text-primary-dark">Travel More, Spend Less!</h2>
-                    <p className="text-muted-foreground mt-2 max-w-md">
-                        We believe in making travel accessible for students. Verify your details to unlock exclusive discounts.
-                    </p>
-                </Card>
+                <HandicapOfferCard />
             </div>
           )}
           
