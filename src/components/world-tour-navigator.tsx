@@ -328,7 +328,6 @@ function Translator() {
 
 function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | undefined, currencySymbol: string }) {
   const [kms, setKms] = React.useState(100);
-  const [days, setDays] = React.useState(1);
   const [roadType, setRoadType] = React.useState<'highway' | 'ghat'>('highway');
   const [isAc, setIsAc] = React.useState(false);
   const [totalFare, setTotalFare] = React.useState(0);
@@ -345,9 +344,9 @@ function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | und
     const { pricing } = selectedVehicle;
     const pricingTier = isAc && pricing.ac ? pricing.ac : pricing.nonAc;
     const rate = pricingTier[roadType];
-    const fare = (kms * rate) + (days * pricing.driver);
+    const fare = (kms * rate) + pricing.driver;
     setTotalFare(fare);
-  }, [kms, days, roadType, isAc, selectedVehicle]);
+  }, [kms, roadType, isAc, selectedVehicle]);
   
   if (!selectedVehicle || !selectedVehicle.pricing) {
     return (
@@ -384,12 +383,8 @@ function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | und
                     <Label className='flex items-center gap-2'><Waypoints /> Kilometers</Label>
                     <Input type="number" value={kms} onChange={(e) => setKms(Number(e.target.value))}/>
                 </div>
-                 <div className="space-y-2">
-                    <Label className='flex items-center gap-2'><CalendarDays /> Days</Label>
-                    <Input type="number" value={days} onChange={(e) => setDays(Number(e.target.value))} />
-                </div>
                 {selectedVehicle.pricing.ac && (
-                 <div className="flex items-center space-x-2 pt-6">
+                 <div className="flex items-center space-x-2 pt-6 col-span-2">
                     <Switch id="ac-switch" checked={isAc} onCheckedChange={setIsAc}/>
                     <Label htmlFor="ac-switch">With A/C</Label>
                   </div>
