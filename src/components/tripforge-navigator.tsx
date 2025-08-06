@@ -164,7 +164,7 @@ const currencySymbols: { [key: string]: string } = {
   USD: '$',
   EUR: '€',
   GBP: '£',
-  INR: '₹',
+  INR: 'Rs',
 };
 
 
@@ -1166,7 +1166,7 @@ export default function TripforgeNavigator() {
     return null;
   }
 
-  const currencySymbol = currencySymbols[toCurrency] || '₹';
+  const currencySymbol = currencySymbols[toCurrency] || 'Rs';
 
   const twoWheelers = vehicles.filter(v => v.type === 'two-wheeler');
   const fourWheelers = vehicles.filter(v => v.type === 'four-wheeler');
