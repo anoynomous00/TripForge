@@ -55,6 +55,8 @@ import {
   Palmtree,
   Landmark,
   Compass,
+  FileText,
+  Fingerprint,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -471,7 +473,6 @@ function StudentOfferCard() {
   );
 }
 
-
 function HandicapOfferCard() {
   const [certificate, setCertificate] = React.useState<File | null>(null);
   const [preview, setPreview] = React.useState<string | null>(null);
@@ -814,6 +815,89 @@ function PlaceSuggester() {
       </div>
     );
   }
+
+function FlightBookingForm() {
+  const [visaPic, setVisaPic] = React.useState<File | null>(null);
+  const [preview, setPreview] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setVisaPic(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><Plane /> Flight Booking Details</CardTitle>
+        <CardDescription>Please provide the following information to proceed with your flight booking.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+                <Label htmlFor="from-place">From Place</Label>
+                <Input id="from-place" placeholder="e.g., Bangalore" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="to-place">To Place</Label>
+                <Input id="to-place" placeholder="e.g., New Delhi" />
+            </div>
+        </div>
+        <Separator />
+        <div className="space-y-2">
+            <Label>Passenger Information</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input placeholder="Full Name" />
+                <Input placeholder="Mobile Number" type="tel" />
+            </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="space-y-2">
+                <Label htmlFor="native-place">Native Place</Label>
+                <Input id="native-place" placeholder="e.g., Davanagere" />
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="aadhar-no">Aadhar Number</Label>
+                <Input id="aadhar-no" placeholder="Enter 12-digit Aadhar" />
+            </div>
+        </div>
+        <Separator />
+        <div className="space-y-2">
+            <Label>Travel Documents</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <Input placeholder="Passport Number" />
+                 <Input placeholder="Visa Number (if applicable)" />
+            </div>
+        </div>
+         <div className="space-y-2">
+            <Label htmlFor="visa-pic">Upload Visa Copy</Label>
+            <Input 
+                id="visa-pic" 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange}
+                accept="image/*,application/pdf"
+            />
+            {preview && (
+                 <div className="mt-2">
+                    <Image src={preview} alt="Visa preview" width={200} height={125} className="rounded-md object-contain border" />
+                 </div>
+            )}
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button>Book Flight (Placeholder)</Button>
+      </CardFooter>
+    </Card>
+  )
+}
 
 export default function WorldTourNavigator() {
   const { toast } = useToast();
@@ -1171,26 +1255,28 @@ export default function WorldTourNavigator() {
           )}
 
           {activeView === 'vehicle-selection' && (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                <div className='lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8'>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className='flex items-center gap-2'><Car/> Select Vehicle</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                                {vehicles.map(v => (
-                                    <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
-                                        <RadioGroupItem value={v.id} />
-                                        <v.icon className='w-6 h-6 text-muted-foreground'/>
-                                        <span>{v.name}</span>
-                                    </Label>
-                                ))}
-                            </RadioGroup>
-                        </CardContent>
-                    </Card>
-                    <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
-                </div>
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className='flex items-center gap-2'><Car/> Select Transport</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='grid grid-cols-2 sm:grid-cols-3 gap-4'>
+                            {vehicles.map(v => (
+                                <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
+                                    <RadioGroupItem value={v.id} />
+                                    <v.icon className='w-6 h-6 text-muted-foreground'/>
+                                    <span>{v.name}</span>
+                                </Label>
+                            ))}
+                        </RadioGroup>
+                    </CardContent>
+                </Card>
+                {selectedVehicleId === 'flight' ? (
+                  <FlightBookingForm />
+                ) : (
+                  <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
+                )}
              </div>
           )}
 
