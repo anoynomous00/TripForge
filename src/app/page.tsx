@@ -8,7 +8,7 @@ import TripforgeNavigator from '@/components/tripforge-navigator';
 function WelcomePage({ onEnter }: { onEnter: () => void }) {
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
-      <header className="flex justify-end py-4 px-8">
+      <header className="flex justify-center py-4 px-8">
         <h1
           className="text-2xl font-bold"
           style={{
