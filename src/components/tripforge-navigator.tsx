@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -113,7 +114,6 @@ import { Switch } from './ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import type { PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import MyMap from './ui/map';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
