@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -268,8 +269,8 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
         </CardHeader>
         <CardContent className="space-y-6">
             <div className='grid grid-cols-2 gap-4'>
-                <FormItem>
-                    <FormLabel className='flex items-center gap-2'><Waypoints/> Road Type</FormLabel>
+                <div className="space-y-2">
+                    <Label className='flex items-center gap-2'><Waypoints/> Road Type</Label>
                     <Select onValueChange={(value: 'highway' | 'ghat') => setRoadType(value)} defaultValue={roadType}>
                         <SelectTrigger><SelectValue/></SelectTrigger>
                         <SelectContent>
@@ -277,15 +278,15 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
                             <SelectItem value="ghat">Ghat</SelectItem>
                         </SelectContent>
                     </Select>
-                </FormItem>
-                 <FormItem>
-                    <FormLabel className='flex items-center gap-2'><Waypoints /> Kilometers</FormLabel>
+                </div>
+                 <div className="space-y-2">
+                    <Label className='flex items-center gap-2'><Waypoints /> Kilometers</Label>
                     <Input type="number" value={kms} onChange={(e) => setKms(Number(e.target.value))}/>
-                </FormItem>
-                 <FormItem>
-                    <FormLabel className='flex items-center gap-2'><CalendarDays /> Days</FormLabel>
+                </div>
+                 <div className="space-y-2">
+                    <Label className='flex items-center gap-2'><CalendarDays /> Days</Label>
                     <Input type="number" value={days} onChange={(e) => setDays(Number(e.target.value))} />
-                </FormItem>
+                </div>
             </div>
             <Separator />
             <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
@@ -704,7 +705,7 @@ export default function WorldTourNavigator() {
                                                 <FormControl>
                                                 <RadioGroupItem value={vehicle.id} className="sr-only" />
                                                 </FormControl>
-                                                <FormLabel className={cn(
+                                                <Label className={cn(
                                                 "flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer aspect-square transition-all duration-200",
                                                 field.value === vehicle.id && "border-primary ring-2 ring-primary"
                                                 )}>
@@ -717,7 +718,7 @@ export default function WorldTourNavigator() {
                                                         ₹{vehicle.pricing.highway}/km
                                                     </span>
                                                  )}
-                                                </FormLabel>
+                                                </Label>
                                             </FormItem>
                                             ))}
                                         </RadioGroup>
@@ -901,3 +902,5 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
+
+    
