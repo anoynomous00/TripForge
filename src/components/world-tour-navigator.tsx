@@ -449,7 +449,7 @@ export default function WorldTourNavigator() {
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
     { id: 'budget', label: 'Budget', icon: Wallet },
-    { id: 'tools', label: 'Tools', icon: Languages },
+    { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
   ]
 
