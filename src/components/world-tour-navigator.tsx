@@ -757,12 +757,7 @@ export default function WorldTourNavigator() {
         <SidebarHeader>
           <div className="flex items-center gap-3 p-2">
             <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
-            <h1 className="text-2xl font-bold font-headline uppercase" style={{
-                background: 'linear-gradient(to right, #8a2be2, #ff4500, #ffd700)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow: '1px 1px 0 #4B0082, -1px -1px 0 #4B0082, 1px -1px 0 #4B0082, -1px 1px 0 #4B0082, 1px 1px 2px #4B0082'
-            }}>
+            <h1 className="text-2xl font-bold font-headline">
               TRIPFORGE
             </h1>
           </div>
