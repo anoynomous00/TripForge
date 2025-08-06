@@ -142,8 +142,8 @@ function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementTy
 function CurrencyConverter() {
   const [amount, setAmount] = React.useState(100);
   const [from, setFrom] = React.useState('USD');
-  const [to, setTo] = React.useState('EUR');
-  const [converted, setConverted] = React.useState(92.5); // Dummy data
+  const [to, setTo] = React.useState('INR');
+  const [converted, setConverted] = React.useState(8350); // Dummy data
 
   return (
     <Card>
@@ -164,6 +164,7 @@ function CurrencyConverter() {
                 <SelectItem value="USD">USD</SelectItem>
                 <SelectItem value="EUR">EUR</SelectItem>
                 <SelectItem value="GBP">GBP</SelectItem>
+                <SelectItem value="INR">INR</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -182,6 +183,7 @@ function CurrencyConverter() {
                 <SelectItem value="USD">USD</SelectItem>
                 <SelectItem value="EUR">EUR</SelectItem>
                 <SelectItem value="GBP">GBP</SelectItem>
+                <SelectItem value="INR">INR</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -208,15 +210,17 @@ function Translator() {
                         <SelectItem value="en">English</SelectItem>
                         <SelectItem value="es">Spanish</SelectItem>
                         <SelectItem value="fr">French</SelectItem>
+                        <SelectItem value="kn">Kannada</SelectItem>
                     </SelectContent>
                 </Select>
                 <Textarea placeholder="Enter text to translate..." />
-                 <Select defaultValue="es">
+                 <Select defaultValue="kn">
                     <SelectTrigger><SelectValue placeholder="To Language" /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="en">English</SelectItem>
                         <SelectItem value="es">Spanish</SelectItem>
                         <SelectItem value="fr">French</SelectItem>
+                        <SelectItem value="kn">Kannada</SelectItem>
                     </SelectContent>
                 </Select>
                 <Textarea placeholder="Translation..." readOnly />
@@ -449,6 +453,7 @@ export default function WorldTourNavigator() {
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
     { id: 'budget', label: 'Budget', icon: Wallet },
+    { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
   ]
@@ -853,20 +858,20 @@ export default function WorldTourNavigator() {
                     <CardContent className="space-y-4">
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Tolls</span>
-                            <span className="font-bold text-lg">$34.50</span>
+                            <span className="font-bold text-lg">₹2,800</span>
                         </div>
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Lodging (3 nights)</span>
-                            <span className="font-bold text-lg">$450.00</span>
+                            <span className="font-bold text-lg">₹15,000</span>
                         </div>
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Food & Activities</span>
-                            <span className="font-bold text-lg">$600.00</span>
+                            <span className="font-bold text-lg">₹20,000</span>
                         </div>
                         <Separator />
                          <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary">
                             <span className="font-bold text-lg">Total Estimated Cost</span>
-                            <span className="font-bold text-2xl text-primary">$1084.50</span>
+                            <span className="font-bold text-2xl text-primary">₹37,800</span>
                         </div>
                     </CardContent>
                      <CardFooter>
@@ -876,6 +881,38 @@ export default function WorldTourNavigator() {
                 <CurrencyConverter />
              </div>
           )}
+
+          {activeView === 'offers' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><BadgePercent /> Student Offer</CardTitle>
+                        <CardDescription>Get 30% off your next trip by verifying your student status.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="college-name">College Name</Label>
+                            <Input id="college-name" placeholder="Enter your college name" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="mobile-number">Mobile Number</Label>
+                            <Input id="mobile-number" placeholder="Enter your mobile number" />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button>Claim 30% Off</Button>
+                    </CardFooter>
+                </Card>
+                <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
+                    <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="Happy students" className="mb-6 rounded-lg" data-ai-hint="happy students travel"/>
+                    <h2 className="text-2xl font-bold font-headline text-primary-dark">Travel More, Spend Less!</h2>
+                    <p className="text-muted-foreground mt-2 max-w-md">
+                        We believe in making travel accessible for students. Verify your details to unlock exclusive discounts.
+                    </p>
+                </Card>
+            </div>
+          )}
+          
           {activeView === 'tools' && (
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <Translator />
@@ -903,7 +940,7 @@ export default function WorldTourNavigator() {
                     <AlertDescription>
                         We're working on adding verified listings, dietary filters, detailed expense tracking, and more to make your trip planning even better.
                     </AlertDescription>
-                </Alert>
+                 </Alert>
             </div>
           )}
         </main>
