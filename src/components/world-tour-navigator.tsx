@@ -91,7 +91,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMounted } from '@/hooks/use-mobile';
-import { generateSuggestions } from '@/app/actions';
+import { generateSuggestions, translateText } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
@@ -199,6 +199,35 @@ function CurrencyConverter() {
 }
 
 function Translator() {
+    const { toast } = useToast();
+    const [sourceLanguage, setSourceLanguage] = React.useState('English');
+    const [targetLanguage, setTargetLanguage] = React.useState('Kannada');
+    const [inputText, setInputText] = React.useState('');
+    const [translatedText, setTranslatedText] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const handleTranslate = async () => {
+        if (!inputText.trim()) {
+            toast({ variant: 'destructive', title: 'Input required', description: 'Please enter text to translate.' });
+            return;
+        }
+        setIsLoading(true);
+        setTranslatedText('');
+
+        const result = await translateText({
+            text: inputText,
+            sourceLanguage,
+            targetLanguage,
+        });
+
+        if (result.success && result.data) {
+            setTranslatedText(result.data.translatedText);
+        } else {
+            toast({ variant: 'destructive', title: 'Translation Failed', description: result.error });
+        }
+        setIsLoading(false);
+    };
+
     return (
         <Card>
             <CardHeader>
@@ -206,29 +235,31 @@ function Translator() {
                 <CardDescription>Translate text between languages.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                 <Select defaultValue="en">
+                 <Select value={sourceLanguage} onValueChange={setSourceLanguage}>
                     <SelectTrigger><SelectValue placeholder="From Language" /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="es">Spanish</SelectItem>
-                        <SelectItem value="fr">French</SelectItem>
-                        <SelectItem value="kn">Kannada</SelectItem>
+                        <SelectItem value="English">English</SelectItem>
+                        <SelectItem value="Spanish">Spanish</SelectItem>
+                        <SelectItem value="French">French</SelectItem>
+                        <SelectItem value="Kannada">Kannada</SelectItem>
                     </SelectContent>
                 </Select>
-                <Textarea placeholder="Enter text to translate..." />
-                 <Select defaultValue="kn">
+                <Textarea placeholder="Enter text to translate..." value={inputText} onChange={(e) => setInputText(e.target.value)} />
+                 <Select value={targetLanguage} onValueChange={setTargetLanguage}>
                     <SelectTrigger><SelectValue placeholder="To Language" /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="es">Spanish</SelectItem>
-                        <SelectItem value="fr">French</SelectItem>
-                        <SelectItem value="kn">Kannada</SelectItem>
+                        <SelectItem value="English">English</SelectItem>
+                        <SelectItem value="Spanish">Spanish</SelectItem>
+                        <SelectItem value="French">French</SelectItem>
+                        <SelectItem value="Kannada">Kannada</SelectItem>
                     </SelectContent>
                 </Select>
-                <Textarea placeholder="Translation..." readOnly />
+                <Textarea placeholder="Translation..." value={translatedText} readOnly />
             </CardContent>
              <CardFooter>
-                <Button>Translate</Button>
+                <Button onClick={handleTranslate} disabled={isLoading}>
+                    {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Translating...</> : 'Translate'}
+                </Button>
             </CardFooter>
         </Card>
     )
