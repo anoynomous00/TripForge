@@ -993,6 +993,11 @@ export default function TripforgeNavigator() {
     },
   });
 
+  const { watch } = form;
+  const currentLocation = watch('currentLocation');
+  const destination = watch('destination');
+
+
   const handleNewBooking = (bookingData: Omit<Booking, 'id'>) => {
     const newBooking = {
       id: `booking-${Date.now()}`,
@@ -1055,6 +1060,7 @@ export default function TripforgeNavigator() {
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
+    { id: 'navigation', label: 'Navigation', icon: Map },
     { id: 'vehicle-selection', label: 'Vehicle Selection', icon: Car },
     { id: 'bookings', label: 'Bookings', icon: BookOpenCheck },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
@@ -1074,6 +1080,19 @@ export default function TripforgeNavigator() {
 
   const twoWheelers = vehicles.filter(v => v.type === 'two-wheeler');
   const fourWheelers = vehicles.filter(v => v.type === 'four-wheeler');
+
+  const handleNavigate = () => {
+    if (currentLocation && destination) {
+        const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentLocation)}&destination=${encodeURIComponent(destination)}`;
+        window.open(url, '_blank');
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Missing Information',
+            description: 'Please enter a source and destination in Trip Details first.',
+        });
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -1337,19 +1356,41 @@ export default function TripforgeNavigator() {
                                 )}
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Live Map</CardTitle>
-                                <CardDescription>Your route will appear here. Note: A valid Google Maps API key is required for this map to function correctly.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <MyMap />
-                            </CardContent>
-                        </Card>
                 </div>
             </div>
           )}
           
+          {activeView === 'navigation' && (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Map/> Live Navigation</CardTitle>
+                    <CardDescription>Open your route in Google Maps for real-time, turn-by-turn directions.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className='p-4 border rounded-lg space-y-2'>
+                        <div>
+                            <p className='text-sm text-muted-foreground'>From</p>
+                            <p className='font-semibold'>{currentLocation || 'Not set'}</p>
+                        </div>
+                        <Separator />
+                        <div>
+                            <p className='text-sm text-muted-foreground'>To</p>
+                            <p className='font-semibold'>{destination || 'Not set'}</p>
+                        </div>
+                    </div>
+                     <Button size="lg" className="w-full" onClick={handleNavigate} disabled={!currentLocation || !destination}>
+                        <Waypoints className="mr-2 h-5 w-5" />
+                        Navigate on Google Maps
+                    </Button>
+                </CardContent>
+                <CardFooter>
+                    <p className='text-xs text-muted-foreground'>
+                        Note: This will open Google Maps in a new tab. Please ensure you have an internet connection.
+                    </p>
+                </CardFooter>
+            </Card>
+          )}
+
           {activeView === 'place-suggester' && (
             <PlaceSuggester />
           )}
