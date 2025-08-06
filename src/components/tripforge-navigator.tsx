@@ -1043,16 +1043,15 @@ export default function TripforgeNavigator() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3 p-2">
-            <Image src="https://i.imgur.com/kE9o47G.png" alt="TRIPFORGE Logo" width={40} height={40} />
             <h1
               className="text-2xl font-bold"
               style={{
-                backgroundImage: 'linear-gradient(to right, #facc15, #ef4444, #a855f7, #22c55e)',
+                backgroundImage: 'linear-gradient(to right, #f87171, #fb923c, #facc15)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              TRIPFORGE
+              tripforge
             </h1>
           </div>
         </SidebarHeader>
@@ -1533,7 +1532,16 @@ export default function TripforgeNavigator() {
                     </CardContent>
                 </Card>
                 <Card className="flex flex-col items-center justify-center">
-                   <Image src="https://i.imgur.com/kE9o47G.png" data-ai-hint="customer support travel" width={400} height={300} alt="Customer support" className="rounded-t-lg object-contain p-8" />
+                   <h1
+                      className="text-6xl font-bold"
+                      style={{
+                        backgroundImage: 'linear-gradient(to right, #f87171, #fb923c, #facc15)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }}
+                    >
+                      tripforge
+                    </h1>
                    <CardHeader className="text-center">
                       <CardTitle>We're Here for You!</CardTitle>
                    </CardHeader>
