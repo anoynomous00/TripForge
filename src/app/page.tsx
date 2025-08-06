@@ -27,7 +27,7 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
                 alt={place.alt}
                 layout="fill"
                 objectFit="cover"
-                className="opacity-40"
+                className="opacity-40 transition-transform duration-500 ease-in-out group-hover:scale-105"
                 data-ai-hint={place.hint}
               />
             </div>
@@ -36,13 +36,13 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
         <div className="absolute inset-0 bg-black/60"></div>
       </div>
       <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
-        <h1 className="text-5xl md:text-7xl font-extrabold font-headline tracking-tight">
+        <h1 className="text-5xl md:text-7xl font-extrabold font-headline tracking-tight animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           WorldTour
         </h1>
-        <p className="mt-4 text-xl md:text-2xl font-light max-w-2xl">
+        <p className="mt-4 text-xl md:text-2xl font-light max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           Where Every Journey Begins with Confidence.
         </p>
-        <Button onClick={onEnter} size="lg" className="mt-8">
+        <Button onClick={onEnter} size="lg" className="mt-8 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           Start Planning Your Trip <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>
