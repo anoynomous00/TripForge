@@ -429,7 +429,9 @@ function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: stri
             <Separator />
             <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
                 <span className="font-bold text-lg">Estimated Total Fare</span>
-                <span className="font-bold text-2xl text-primary">{currencySymbol}{totalFare.toLocaleString()}</span>
+                <span className="text-2xl text-primary">
+                    <span className='font-normal'>{currencySymbol}</span><span className='font-bold'>{totalFare.toLocaleString()}</span>
+                </span>
             </div>
              <div className="space-y-4">
                 <Label>Passenger Details</Label>
@@ -715,7 +717,9 @@ function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
 
         <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
           <span className="font-bold text-lg">Total Lodging Cost</span>
-          <span className="font-bold text-2xl text-primary">{currencySymbol}{totalCost.toLocaleString()}</span>
+          <span className="text-2xl text-primary">
+            <span className='font-normal'>{currencySymbol}</span><span className='font-bold'>{totalCost.toLocaleString()}</span>
+          </span>
         </div>
       </CardContent>
       <CardFooter>
@@ -1560,3 +1564,4 @@ export default function TripforgeNavigator() {
     </div>
   );
 }
+
