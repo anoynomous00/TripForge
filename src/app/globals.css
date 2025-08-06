@@ -95,8 +95,12 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
     transform: scale(1.1);
+  }
+
+  .hide-global-background body::before {
+    display: none;
   }
 }

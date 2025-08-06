@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import TripforgeNavigator from '@/components/tripforge-navigator';
+import { cn } from '@/lib/utils';
 
 const karnatakaPlaces = [
   { src: 'https://placehold.co/600x401.png', alt: 'Hampi', hint: 'ancient ruins Hampi' },
@@ -65,6 +66,14 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
 
 export default function Home() {
   const [showWelcome, setShowWelcome] = React.useState(true);
+  
+  React.useEffect(() => {
+    if (showWelcome) {
+      document.documentElement.classList.add('hide-global-background');
+    } else {
+      document.documentElement.classList.remove('hide-global-background');
+    }
+  }, [showWelcome]);
 
   if (showWelcome) {
     return <WelcomePage onEnter={() => setShowWelcome(false)} />;
