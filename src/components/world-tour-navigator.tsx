@@ -110,7 +110,6 @@ const formSchema = z.object({
   travelers: z.coerce.number().int().min(1, { message: 'At least one traveler is required.' }),
   budget: z.enum(['budget', 'moderate', 'luxury']),
   preferences: z.string().optional(),
-  vehicle: z.string({ required_error: 'Please select a vehicle.' }),
   dailyTravelDistance: z.coerce.number().min(50, { message: 'Must travel at least 50 miles daily.' }),
 });
 
@@ -684,13 +683,10 @@ export default function WorldTourNavigator() {
       travelers: 1,
       budget: 'moderate',
       preferences: '',
-      vehicle: undefined,
       dailyTravelDistance: 300,
     },
   });
   
-  const selectedVehicleId = form.watch('vehicle');
-
   const handleTripDetailsSubmit = async () => {
     setIsSubmitting(true);
     setTripSuggestions(null);
@@ -702,7 +698,6 @@ export default function WorldTourNavigator() {
     const result = await generateSuggestions(input);
     if (result.success && result.data) {
       setTripSuggestions(result.data);
-      // We stay on the same page to show results
     } else {
       toast({
         variant: 'destructive',
@@ -715,27 +710,33 @@ export default function WorldTourNavigator() {
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    setActiveView('lodge-booking');
-
     const input = {
       ...values,
       tripStartDate: format(values.tripStartDate, 'yyyy-MM-dd'),
     };
 
-    // This is where the AI call happens, but we are not displaying the results.
-    // We can keep the call to potentially use the data later, or remove it.
-    await generateSuggestions(input); 
+    const result = await generateSuggestions(input); 
+    
+    if (result.success && result.data) {
+        setTripSuggestions(result.data);
+        setActiveView('lodge-booking');
+        toast({
+          title: "Trip Details Confirmed!",
+          description: "You can now proceed with your lodge booking.",
+        });
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Submission Failed',
+            description: result.error || 'Could not process your trip details. Please try again.',
+        });
+    }
     
     setIsSubmitting(false);
-    toast({
-      title: "Trip Details Confirmed!",
-      description: "You can now proceed with your lodge booking.",
-    });
   }
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
-    { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'offers', label: 'Offers', icon: BadgePercent },
@@ -754,9 +755,14 @@ export default function WorldTourNavigator() {
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2 p-2">
-            <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={32} height={32} />
-            <h1 className="text-xl font-bold font-headline text-primary transition-all duration-300">
+          <div className="flex items-center gap-3 p-2">
+            <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
+            <h1 className="text-2xl font-bold font-headline uppercase" style={{
+                background: 'linear-gradient(to right, #ef4444, #f97316, #eab308)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 2px #000'
+            }}>
               TRIPFORGE
             </h1>
           </div>
@@ -777,7 +783,6 @@ export default function WorldTourNavigator() {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className='flex-col gap-2'>
-           {/* Save/Load buttons removed */}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
@@ -805,7 +810,7 @@ export default function WorldTourNavigator() {
                         </CardHeader>
                         <CardContent>
                         <Form {...form}>
-                            <form onSubmit={(e) => { e.preventDefault(); handleTripDetailsSubmit(); }} className="space-y-6">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                 <div className='space-y-4'>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
@@ -939,7 +944,7 @@ export default function WorldTourNavigator() {
                                     />
                                 </div>
                             
-                            <div className='flex justify-between items-center !mt-8'>
+                            <div className='flex justify-end items-center !mt-8'>
                                 <Button type="submit" size="lg" disabled={isSubmitting}>
                                     {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Getting Suggestions...</> : (
                                     <>
@@ -947,9 +952,6 @@ export default function WorldTourNavigator() {
                                     </>
                                     )}
                                 </Button>
-                                 <Button variant="outline" onClick={() => setActiveView('vehicle')} disabled={!form.formState.isValid}>
-                                    Next: Choose Vehicle <ChevronRight className="ml-2 h-4 w-4" />
-                                 </Button>
                             </div>
                             </form>
                         </Form>
@@ -1026,72 +1028,6 @@ export default function WorldTourNavigator() {
             </div>
           )}
 
-          {activeView === 'vehicle' && (
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2 text-2xl"><Car /> Select Your Vehicle</CardTitle>
-                        <CardDescription>Choose the best ride for your adventure.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                <FormField
-                                    control={form.control}
-                                    name="vehicle"
-                                    render={({ field }) => (
-                                    <FormItem className="space-y-3">
-                                        <FormControl>
-                                        <RadioGroup
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-2"
-                                        >
-                                            {vehicles.map(vehicle => (
-                                            <FormItem key={vehicle.id}>
-                                                <FormControl>
-                                                <RadioGroupItem value={vehicle.id} className="sr-only" />
-                                                </FormControl>
-                                                <Label className={cn(
-                                                "flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer aspect-square transition-all duration-200",
-                                                field.value === vehicle.id && "border-primary ring-2 ring-primary"
-                                                )}>
-                                                <div className="flex-grow flex items-center justify-center">
-                                                  <vehicle.icon className="w-16 h-16 text-primary" />
-                                                </div>
-                                                <span className="font-bold mt-2 text-center">{vehicle.name}</span>
-                                                 {vehicle.pricing && (
-                                                    <span className='text-xs text-muted-foreground mt-1'>
-                                                        ₹{vehicle.pricing.nonAc.highway}/km
-                                                    </span>
-                                                 )}
-                                                </Label>
-                                            </FormItem>
-                                            ))}
-                                        </RadioGroup>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
-                                <div className="flex justify-between items-center !mt-8">
-                                    <Button variant="outline" onClick={() => setActiveView('trip-details')}>Back</Button>
-                                    <Button type="submit" size="lg" disabled={isSubmitting || !selectedVehicleId}>
-                                        {isSubmitting ? (
-                                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</>
-                                        ) : (
-                                            <>Confirm & Go to Lodge Booking <ChevronRight className="ml-2 h-4 w-4" /></>
-                                        )}
-                                    </Button>
-                                </div>
-                            </form>
-                        </Form>
-                    </CardContent>
-                </Card>
-                <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
-                </div>
-          )}
-          
           {activeView === 'lodge-booking' && (
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
                 <LodgeBookingCard currencySymbol={currencySymbol} />
