@@ -24,7 +24,8 @@ import {
   BedDouble,
   Clock,
   Waypoints,
-  Info
+  Info,
+  ChevronDown
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -39,11 +40,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { generateSuggestions } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
-import { BusIcon, OmniIcon, TempoTravellerIcon } from '@/components/icons';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -59,9 +60,9 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const vehicles = [
-  { id: 'omni', name: 'Omni', icon: OmniIcon, capacity: '2-4' },
-  { id: 'tempo', name: 'Tempo Traveller', icon: TempoTravellerIcon, capacity: '5-12' },
-  { id: 'bus', name: 'Bus', icon: BusIcon, capacity: '13+' },
+  { id: 'omni', name: 'Omni', capacity: '2-4', image: 'https://placehold.co/400x300.png', hint: 'white van' },
+  { id: 'tempo', name: 'Tempo Traveller', capacity: '5-12', image: 'https://placehold.co/400x300.png', hint: 'white minibus' },
+  { id: 'bus', name: 'Bus', capacity: '13+', image: 'https://placehold.co/400x300.png', hint: 'tourist bus' },
 ];
 
 export default function WorldTourNavigator() {
@@ -227,177 +228,195 @@ export default function WorldTourNavigator() {
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="currentLocation"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>From</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., New York, NY" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="destination"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>To</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., Los Angeles, CA" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="tripStartDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Start Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, 'PPP')
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="travelers"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Travelers</FormLabel>
-                          <FormControl>
-                            <Input type="number" placeholder="e.g., 2" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                     <FormField
-                      control={form.control}
-                      name="budget"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Budget</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select your budget" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="budget">Budget</SelectItem>
-                              <SelectItem value="moderate">Moderate</SelectItem>
-                              <SelectItem value="luxury">Luxury</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="preferences"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Lodging Preferences</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., near beach, family-friendly" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="dailyTravelDistance"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Daily Miles</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="e.g., 300" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="vehicle"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Vehicle Choice</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-4"
-                          >
-                            {vehicles.map(vehicle => (
-                              <FormItem key={vehicle.id}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <Accordion type="multiple" defaultValue={['item-1', 'item-2', 'item-3']} className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger className='text-lg font-semibold'>
+                        <div className='flex items-center gap-2'><MapPin /> Trip Details</div>
+                      </AccordionTrigger>
+                      <AccordionContent className='pt-4 space-y-4'>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="currentLocation"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>From</FormLabel>
                                 <FormControl>
-                                  <RadioGroupItem value={vehicle.id} className="sr-only" />
+                                  <Input placeholder="e.g., New York, NY" {...field} />
                                 </FormControl>
-                                <FormLabel className={cn(
-                                  "flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer",
-                                  field.value === vehicle.id && "border-primary"
-                                )}>
-                                  <vehicle.icon className="w-12 h-12 mb-2" />
-                                  <span className="font-bold">{vehicle.name}</span>
-                                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                    <Users className="w-3 h-3"/> {vehicle.capacity}
-                                  </span>
-                                </FormLabel>
+                                <FormMessage />
                               </FormItem>
-                            ))}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="destination"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>To</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="e.g., Los Angeles, CA" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="tripStartDate"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel>Start Date</FormLabel>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full pl-3 text-left font-normal",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value ? (
+                                        format(field.value, 'PPP')
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                     <AccordionItem value="item-2">
+                      <AccordionTrigger className='text-lg font-semibold'>
+                        <div className='flex items-center gap-2'><Users /> Traveler Preferences</div>
+                      </AccordionTrigger>
+                      <AccordionContent className='pt-4 space-y-4'>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="travelers"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Travelers</FormLabel>
+                                <FormControl>
+                                  <Input type="number" placeholder="e.g., 2" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                           <FormField
+                            control={form.control}
+                            name="budget"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Budget</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select your budget" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="budget">Budget</SelectItem>
+                                    <SelectItem value="moderate">Moderate</SelectItem>
+                                    <SelectItem value="luxury">Luxury</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="preferences"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Lodging Preferences (Optional)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g., near beach, family-friendly" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                     <AccordionItem value="item-3">
+                      <AccordionTrigger className='text-lg font-semibold'>
+                        <div className='flex items-center gap-2'><Car /> Vehicle & Pace</div>
+                      </AccordionTrigger>
+                      <AccordionContent className='pt-4 space-y-4'>
+                          <FormField
+                            control={form.control}
+                            name="dailyTravelDistance"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Daily Miles</FormLabel>
+                                <FormControl>
+                                  <Input type="number" placeholder="e.g., 300" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="vehicle"
+                            render={({ field }) => (
+                              <FormItem className="space-y-3">
+                                <FormLabel>Vehicle Choice</FormLabel>
+                                <FormControl>
+                                  <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2"
+                                  >
+                                    {vehicles.map(vehicle => (
+                                      <FormItem key={vehicle.id}>
+                                        <FormControl>
+                                          <RadioGroupItem value={vehicle.id} className="sr-only" />
+                                        </FormControl>
+                                        <FormLabel className={cn(
+                                          "flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer aspect-square",
+                                          field.value === vehicle.id && "border-primary"
+                                        )}>
+                                          <Image src={vehicle.image} alt={vehicle.name} width={100} height={75} className='rounded-md object-cover flex-grow' data-ai-hint={vehicle.hint}/>
+                                          <span className="font-bold mt-2">{vehicle.name}</span>
+                                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                            <Users className="w-3 h-3"/> {vehicle.capacity}
+                                          </span>
+                                        </FormLabel>
+                                      </FormItem>
+                                    ))}
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                   
                   <Button type="submit" className="w-full !mt-8" size="lg" disabled={isSubmitting}>
                     {isSubmitting ? (
@@ -425,28 +444,29 @@ export default function WorldTourNavigator() {
               <>
                 <Card className="shadow-lg">
                     <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2"><Map/> Route Overview</CardTitle>
+                        <CardTitle className="font-headline flex items-center gap-2"><Map/> Google Maps Overview</CardTitle>
+                        <CardDescription>A look at your route with traffic, toll, and weather info.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {isSubmitting ? <Skeleton className="w-full h-[200px] rounded-lg" /> : 
+                        {isSubmitting ? <Skeleton className="w-full h-[250px] rounded-lg" /> : 
                         <div className='space-y-4'>
-                            <Image src="https://placehold.co/1200x600.png" alt="Map of the route" width={1200} height={600} className="rounded-lg" data-ai-hint="map route" />
+                            <Image src="https://placehold.co/1200x600.png" alt="Map of the route" width={1200} height={600} className="rounded-lg border" data-ai-hint="map route" />
                             <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-center'>
                                 <div className='bg-secondary p-3 rounded-lg'>
-                                    <p className='text-sm font-medium text-muted-foreground'>Route</p>
-                                    <p className='font-bold flex items-center justify-center gap-2'><TrafficCone className='w-4 h-4 text-primary'/> Fastest</p>
+                                    <p className='text-sm font-medium text-muted-foreground'>Traffic</p>
+                                    <p className='font-bold flex items-center justify-center gap-2'><TrafficCone className='w-4 h-4 text-primary'/> Light</p>
                                 </div>
                                 <div className='bg-secondary p-3 rounded-lg'>
-                                    <p className='text-sm font-medium text-muted-foreground'>Traffic</p>
-                                    <p className='font-bold flex items-center justify-center gap-2'><Car className='w-4 h-4 text-primary'/> Light</p>
+                                    <p className='text-sm font-medium text-muted-foreground'>Est. Tolls</p>
+                                    <p className='font-bold flex items-center justify-center gap-2'><DollarSign className='w-4 h-4 text-primary'/> $34.50</p>
                                 </div>
                                 <div className='bg-secondary p-3 rounded-lg'>
                                     <p className='text-sm font-medium text-muted-foreground'>Weather</p>
                                     <p className='font-bold flex items-center justify-center gap-2'><CloudSun className='w-4 h-4 text-primary'/> Sunny</p>
                                 </div>
                                 <div className='bg-secondary p-3 rounded-lg'>
-                                    <p className='text-sm font-medium text-muted-foreground'>Est. Tolls</p>
-                                    <p className='font-bold flex items-center justify-center gap-2'><DollarSign className='w-4 h-4 text-primary'/> $34.50</p>
+                                    <p className='text-sm font-medium text-muted-foreground'>Route</p>
+                                    <p className='font-bold flex items-center justify-center gap-2'><Car className='w-4 h-4 text-primary'/> Fastest</p>
                                 </div>
                             </div>
                         </div>
