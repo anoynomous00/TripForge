@@ -46,6 +46,7 @@ import {
   Phone,
   User,
   Building,
+  Mail,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -1145,6 +1146,16 @@ export default function WorldTourNavigator() {
                             <Phone className="w-5 h-5 text-muted-foreground" />
                             <a href="tel:9025487520" className="text-primary hover:underline">9025487520</a>
                         </div>
+                         <Separator/>
+                        <div className="flex items-center gap-4">
+                            <Phone className="w-5 h-5 text-muted-foreground" />
+                            <a href="tel:9042002420" className="text-primary hover:underline">9042002420</a>
+                        </div>
+                        <Separator/>
+                         <div className="flex items-center gap-4">
+                            <Mail className="w-5 h-5 text-muted-foreground" />
+                            <a href="mailto:gaganbn@gmail.com" className="text-primary hover:underline">gaganbn@gmail.com</a>
+                        </div>
                         <Separator/>
                         <div className="flex items-center gap-4">
                             <MapPin className="w-5 h-5 text-muted-foreground" />
@@ -1168,3 +1179,5 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
+
+    
