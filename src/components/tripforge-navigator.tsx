@@ -1543,7 +1543,7 @@ export default function TripforgeNavigator() {
                     </CardContent>
                 </Card>
                 <Card className="flex flex-col items-center justify-center">
-                   <Image src="https://placehold.co/400x300.png" data-ai-hint="customer support travel" width={400} height={300} alt="Customer support" className="rounded-t-lg" />
+                   <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" data-ai-hint="customer support travel" width={400} height={300} alt="Customer support" className="rounded-t-lg object-contain p-8" />
                    <CardHeader className="text-center">
                       <CardTitle>We're Here for You!</CardTitle>
                    </CardHeader>
