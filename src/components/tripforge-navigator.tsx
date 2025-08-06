@@ -134,7 +134,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const CustomBikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" {...props}>
-      <path d="M499.5 224.2c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L358.9 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9l-19.5 33.8c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2L244 290.8c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#a6a6a6"/>
+      <path d="M499.5 224.2c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L358.9 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9l-19.5 33.8c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2L244 290.8c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6 2.9 6 2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#a6a6a6"/>
       <path d="M246.5 288.7l-4.5-8.6c-1.2-3-4.1-5.2-7.3-5.2h-24.8c-2.8 0-5.4-1.5-6.8-3.9L183.4 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9L108.4 275c-1.4 2.4-4 3.9-6.8 3.9H76.8c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9H224c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c.6-1.5.6-3.2 0-4.7z" fill="#d9d9d9"/>
       <path d="M243.6 169.8c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L102.9 192c-1.4-2.4-4-3.9-6.8-3.9H54.2c-2.8 0-5.4 1.5-6.8 3.9L27.9 227.3c-1.4 2.4-4 3.9-6.8 3.9H-3.7c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#404040"/>
       <path d="M375.9 313.1c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L235.3 330c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9L160.1 365c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#c1c1c1"/>
@@ -811,110 +811,52 @@ function PlaceSuggester() {
     );
   }
 
-function FlightBookingForm({ onBook }: { onBook: (booking: Omit<Booking, 'id'>) => void }) {
-  const [visaPic, setVisaPic] = React.useState<File | null>(null);
-  const [preview, setPreview] = React.useState<string | null>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
+function FlightBookingForm() {
+  const { toast } = useToast();
   const [fromPlace, setFromPlace] = React.useState('');
   const [toPlace, setToPlace] = React.useState('');
-  const [passengerName, setPassengerName] = React.useState('');
-  const [mobileNumber, setMobileNumber] = React.useState('');
-
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setVisaPic(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleBookFlight = () => {
-    if(!fromPlace || !toPlace || !passengerName || !mobileNumber) {
-        alert('Please fill all required fields.');
-        return;
+    if (!fromPlace || !toPlace) {
+      toast({
+        variant: 'destructive',
+        title: 'Missing Information',
+        description: 'Please enter both a "From" and "To" location.',
+      });
+      return;
     }
-    onBook({
-        vehicleName: `Flight from ${fromPlace} to ${toPlace}`,
-        passengerName,
-        mobileNumber,
-        amount: 'Varies',
-        currencySymbol: '$',
-    });
-    // Redirect after adding to internal list
-    window.open('https://www.makemytrip.com/flights/', '_blank');
-  }
+    // Note: Pre-filling MakeMyTrip forms via URL is complex and not officially supported.
+    // This will open the search page, but users will need to enter details manually.
+    window.open(`https://www.makemytrip.com/flights/`, '_blank');
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Plane /> Flight Booking Details</CardTitle>
-        <CardDescription>Please provide the following information to proceed with your flight booking.</CardDescription>
+        <CardTitle className="flex items-center gap-2"><Plane /> Book on MakeMyTrip</CardTitle>
+        <CardDescription>Enter your route and we'll redirect you to MakeMyTrip to complete your booking.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-                <Label htmlFor="from-place">From Place</Label>
-                <Input id="from-place" placeholder="e.g., Bangalore" value={fromPlace} onChange={e => setFromPlace(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="to-place">To Place</Label>
-                <Input id="to-place" placeholder="e.g., New Delhi" value={toPlace} onChange={e => setToPlace(e.target.value)} />
-            </div>
-        </div>
-        <Separator />
-        <div className="space-y-2">
-            <Label>Passenger Information</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input placeholder="Full Name" value={passengerName} onChange={e => setPassengerName(e.target.value)} />
-                <Input placeholder="Mobile Number" type="tel" value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <div className="space-y-2">
-                <Label htmlFor="native-place">Native Place</Label>
-                <Input id="native-place" placeholder="e.g., Davanagere" />
-            </div>
-             <div className="space-y-2">
-                <Label htmlFor="aadhar-no">Aadhar Number</Label>
-                <Input id="aadhar-no" placeholder="Enter 12-digit Aadhar" />
-            </div>
-        </div>
-        <Separator />
-        <div className="space-y-2">
-            <Label>Travel Documents</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <Input placeholder="Passport Number" />
-                 <Input placeholder="Visa Number (if applicable)" />
-            </div>
-        </div>
-         <div className="space-y-2">
-            <Label htmlFor="visa-pic">Upload Visa Copy</Label>
-            <Input 
-                id="visa-pic" 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange}
-                accept="image/*,application/pdf"
-            />
-            {preview && (
-                 <div className="mt-2">
-                    <Image src={preview} alt="Visa preview" width={200} height={125} className="rounded-md object-contain border" />
-                 </div>
-            )}
+          <div className="space-y-2">
+            <Label htmlFor="from-place">From Place</Label>
+            <Input id="from-place" placeholder="e.g., Bangalore" value={fromPlace} onChange={e => setFromPlace(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="to-place">To Place</Label>
+            <Input id="to-place" placeholder="e.g., New Delhi" value={toPlace} onChange={e => setToPlace(e.target.value)} />
+          </div>
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleBookFlight} disabled={!fromPlace || !toPlace || !passengerName || !mobileNumber}>Book Flight & Redirect</Button>
+        <Button onClick={handleBookFlight} disabled={!fromPlace || !toPlace} className="w-full">
+            Search Flights on MakeMyTrip <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
+
 
 function NavigationPage({ 
   currentLocation, 
@@ -1496,7 +1438,7 @@ export default function TripforgeNavigator() {
                     </CardContent>
                 </Card>
                 {activeVehicleTab === 'flight' ? (
-                  <FlightBookingForm onBook={handleNewBooking}/>
+                  <FlightBookingForm />
                 ) : (
                   <ZoomcarBookingCard vehicleId={selectedVehicleId} />
                 )}
