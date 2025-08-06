@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import * as React from 'react';
@@ -1045,7 +1043,7 @@ export default function TripforgeNavigator() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3 p-2">
-            <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
+            <Image src="https://i.imgur.com/kE9o47G.png" alt="TRIPFORGE Logo" width={40} height={40} />
             <h1
               className="text-2xl font-bold"
               style={{
@@ -1535,7 +1533,7 @@ export default function TripforgeNavigator() {
                     </CardContent>
                 </Card>
                 <Card className="flex flex-col items-center justify-center">
-                   <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" data-ai-hint="customer support travel" width={400} height={300} alt="Customer support" className="rounded-t-lg object-contain p-8" />
+                   <Image src="https://i.imgur.com/kE9o47G.png" data-ai-hint="customer support travel" width={400} height={300} alt="Customer support" className="rounded-t-lg object-contain p-8" />
                    <CardHeader className="text-center">
                       <CardTitle>We're Here for You!</CardTitle>
                    </CardHeader>
@@ -1550,10 +1548,3 @@ export default function TripforgeNavigator() {
     </div>
   );
 }
-
-    
-
-    
-
-    
-

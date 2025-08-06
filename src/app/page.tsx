@@ -10,22 +10,15 @@ import { cn } from '@/lib/utils';
 function WelcomePage({ onEnter }: { onEnter: () => void }) {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen bg-transparent text-white overflow-hidden">
-      <div className="absolute top-4 right-6 z-20">
-        <p 
-          className="font-headline text-2xl font-bold lowercase animate-long-fade-in"
-          style={{
-            backgroundImage: 'linear-gradient(to right, #fde047, #f87171, #fca5a5)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            animationDelay: '1.5s',
-            animationDuration: '1s'
-          }}
-        >
-          TRIPFORGE
-        </p>
-      </div>
-     
       <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
+        <Image
+          src="https://i.imgur.com/kE9o47G.png"
+          alt="TRIPFORGE Logo"
+          width={150}
+          height={150}
+          className="mb-8 animate-fade-in-up"
+          style={{ animationDelay: '0.1s' }}
+        />
         <h1 className="text-5xl md:text-7xl font-extrabold font-headline tracking-tight animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           TRIPFORGE
         </h1>
