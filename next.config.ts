@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
         hostname: 'source.unsplash.com',
         port: '',
         pathname: '/**',
+      },
+       {
+        protocol: 'https',
+        hostname: 't0.gstatic.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

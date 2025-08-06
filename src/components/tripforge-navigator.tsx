@@ -743,7 +743,7 @@ function PlaceSuggester() {
             {suggestions.map((place, index) => (
               <Card key={index} className="flex flex-col">
                 <Image
-                  src={`https://source.unsplash.com/600x400/?${encodeURIComponent(place.imageHint)}`}
+                  src={`https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQ_n2h3t0f1r_7i_pB-L-t7q8h8q3iY2aE2A-w2gY9gH3w1cRz8_n6w1X0`}
                   data-ai-hint={place.imageHint}
                   alt={place.name}
                   width={600}
