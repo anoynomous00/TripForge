@@ -59,6 +59,7 @@ import {
   Fingerprint,
   BookOpenCheck,
   ArrowRight,
+  ArrowLeftRight,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -813,9 +814,21 @@ function PlaceSuggester() {
 
 function FlightBookingForm({ from, to }: { from: string; to: string }) {
   const { toast } = useToast();
+  const [localFrom, setLocalFrom] = React.useState(from);
+  const [localTo, setLocalTo] = React.useState(to);
+
+  React.useEffect(() => {
+    setLocalFrom(from);
+    setLocalTo(to);
+  }, [from, to]);
+
+  const handleSwap = () => {
+    setLocalFrom(localTo);
+    setLocalTo(localFrom);
+  }
 
   const handleBookFlight = () => {
-    if (!from || !to) {
+    if (!localFrom || !localTo) {
       toast({
         variant: 'destructive',
         title: 'Missing Information',
@@ -828,6 +841,14 @@ function FlightBookingForm({ from, to }: { from: string; to: string }) {
     window.open(`https://www.makemytrip.com/flights/`, '_blank');
   };
 
+  const LocationDisplay = ({ label, city, airport }: { label: string; city: string; airport: string }) => (
+    <div className='flex-1 p-4'>
+        <p className='text-sm text-muted-foreground'>{label}</p>
+        <p className='text-3xl font-bold'>{city || 'Not set'}</p>
+        <p className='text-xs text-muted-foreground'>{airport}</p>
+    </div>
+  )
+
   return (
     <Card>
       <CardHeader>
@@ -835,20 +856,19 @@ function FlightBookingForm({ from, to }: { from: string; to: string }) {
         <CardDescription>We'll redirect you to MakeMyTrip to complete your booking for the route below.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-          <div className='p-4 border rounded-lg space-y-4'>
-              <div>
-                  <p className='text-sm text-muted-foreground'>From</p>
-                  <p className='font-semibold text-lg'>{from || 'Not set'}</p>
+          <div className='relative flex items-center justify-center rounded-lg border'>
+              <LocationDisplay label="From" city={localFrom} airport={`${(localFrom || 'City').substring(0,3).toUpperCase()}, ${localFrom || 'City'} Airport`} />
+              <div className='absolute z-10'>
+                <Button variant="outline" size="icon" className="rounded-full bg-background" onClick={handleSwap}>
+                  <ArrowLeftRight className='w-4 h-4' />
+                </Button>
               </div>
-              <Separator />
-              <div>
-                  <p className='text-sm text-muted-foreground'>To</p>
-                  <p className='font-semibold text-lg'>{to || 'Not set'}</p>
-              </div>
+              <Separator orientation='vertical' className='h-20' />
+              <LocationDisplay label="To" city={localTo} airport={`${(localTo || 'City').substring(0,3).toUpperCase()}, ${localTo || 'City'} Airport`} />
           </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleBookFlight} disabled={!from || !to} className="w-full">
+        <Button onClick={handleBookFlight} disabled={!localFrom || !localTo} className="w-full">
             Search Flights on MakeMyTrip <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardFooter>
@@ -988,7 +1008,7 @@ export default function TripforgeNavigator() {
     },
   });
 
-  const { watch } = form;
+  const { watch, setValue } = form;
   const currentLocation = watch('currentLocation');
   const destination = watch('destination');
 
@@ -1612,5 +1632,7 @@ export default function TripforgeNavigator() {
     </div>
   );
 }
+
+    
 
     
