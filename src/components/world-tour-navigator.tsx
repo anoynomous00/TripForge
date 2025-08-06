@@ -48,6 +48,13 @@ import {
   Building,
   Mail,
   Hotel,
+  Sun,
+  CloudRain,
+  Snowflake,
+  Mountain,
+  Palmtree,
+  Landmark,
+  Compass,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -96,12 +103,13 @@ import {
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMounted } from '@/hooks/use-mobile';
-import { generateSuggestions, translateText, convertCurrency } from '@/app/actions';
+import { generateSuggestions, translateText, convertCurrency, generatePlaceSuggestions } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import type { PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -675,6 +683,130 @@ function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
   );
 }
 
+const seasons = [
+    { value: 'Summer', label: 'Summer', icon: Sun },
+    { value: 'Monsoon', label: 'Monsoon', icon: CloudRain },
+    { value: 'Winter', label: 'Winter', icon: Snowflake },
+  ];
+  
+  const preferences = [
+    { value: 'Beach', label: 'Beaches', icon: Palmtree },
+    { value: 'Hill Station', label: 'Hill Stations', icon: Mountain },
+    { value: 'Historical', label: 'Historical', icon: Landmark },
+    { value: 'Adventure', label: 'Adventure', icon: Compass },
+  ];
+
+function PlaceSuggester() {
+    const { toast } = useToast();
+    const [season, setSeason] = React.useState('Summer');
+    const [preference, setPreference] = React.useState('Beach');
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [suggestions, setSuggestions] = React.useState<PlaceSuggesterOutput['suggestions']>([]);
+  
+    const handleSuggestPlaces = async () => {
+      setIsLoading(true);
+      setSuggestions([]);
+      const result = await generatePlaceSuggestions({ season, preference });
+      if (result.success && result.data) {
+        setSuggestions(result.data.suggestions);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Suggestion Failed',
+          description: result.error,
+        });
+      }
+      setIsLoading(false);
+    };
+  
+    return (
+      <div className="space-y-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Globe/> Find Your Next Destination</CardTitle>
+            <CardDescription>
+              Select a season and your travel style, and let our AI suggest the perfect spots for your next getaway.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <Label>What time of year are you traveling?</Label>
+                    <RadioGroup value={season} onValueChange={setSeason} className="grid grid-cols-3 gap-2 pt-1">
+                        {seasons.map(({ value, label, icon: Icon }) => (
+                             <Label key={value} className={cn('flex flex-col items-center justify-center rounded-lg border-2 p-3 cursor-pointer transition-all', season === value && 'border-primary ring-2 ring-primary')}>
+                                <Icon className="w-8 h-8 mb-1" />
+                                {label}
+                            </Label>
+                        ))}
+                    </RadioGroup>
+                </div>
+                <div className="space-y-2">
+                    <Label>What kind of places do you like?</Label>
+                     <RadioGroup value={preference} onValueChange={setPreference} className="grid grid-cols-2 lg:grid-cols-4 gap-2 pt-1">
+                        {preferences.map(({ value, label, icon: Icon }) => (
+                             <Label key={value} className={cn('flex flex-col items-center justify-center rounded-lg border-2 p-3 cursor-pointer transition-all', preference === value && 'border-primary ring-2 ring-primary')}>
+                                <Icon className="w-8 h-8 mb-1" />
+                                {label}
+                            </Label>
+                        ))}
+                    </RadioGroup>
+                </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handleSuggestPlaces} disabled={isLoading} size="lg">
+              {isLoading ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Suggesting Places...</>
+              ) : (
+                <><Sparkles className="mr-2 h-4 w-4" />Suggest Places</>
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
+  
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i}>
+                <Skeleton className="w-full h-48 rounded-t-lg" />
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-5/6" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+  
+        {suggestions.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {suggestions.map((place, index) => (
+              <Card key={index} className="flex flex-col">
+                <Image
+                  src={`https://placehold.co/600x400.png`}
+                  data-ai-hint={place.imageHint}
+                  alt={place.name}
+                  width={600}
+                  height={400}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <CardHeader>
+                  <CardTitle>{place.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="text-muted-foreground">{place.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
 export default function WorldTourNavigator() {
   const { toast } = useToast();
@@ -745,6 +877,7 @@ export default function WorldTourNavigator() {
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
+    { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'vehicle-selection', label: 'Vehicle Selection', icon: Car },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
@@ -1024,6 +1157,10 @@ export default function WorldTourNavigator() {
                         </Card>
                 </div>
             </div>
+          )}
+          
+          {activeView === 'place-suggester' && (
+            <PlaceSuggester />
           )}
 
           {activeView === 'vehicle-selection' && (

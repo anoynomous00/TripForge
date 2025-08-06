@@ -4,6 +4,7 @@
 import { getSmartStaySuggestions, type SmartStaySuggestionsInput, type SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { translate, type TranslateInput, type TranslateOutput } from '@/ai/flows/translate-text-flow';
 import { convert, type CurrencyConverterInput, type CurrencyConverterOutput } from '@/ai/flows/currency-converter-flow';
+import { suggestPlaces, type PlaceSuggesterInput, type PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
 
 
 export async function generateSuggestions(
@@ -52,5 +53,20 @@ export async function convertCurrency(
     return { success: false, error: `An unexpected error occurred during conversion: ${errorMessage}` };
   }
 }
+
+export async function generatePlaceSuggestions(
+    input: PlaceSuggesterInput
+  ): Promise<{ success: boolean; data?: PlaceSuggesterOutput; error?: string }> {
+    try {
+      const result = await suggestPlaces(input);
+      if (!result || !result.suggestions) {
+        return { success: false, error: 'Could not generate place suggestions. The model returned an unexpected response.' };
+      }
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Error in generatePlaceSuggestions action:', error);
+      return { success: false, error: 'An unexpected error occurred while generating place suggestions.' };
+    }
+  }
 
     
