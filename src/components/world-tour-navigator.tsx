@@ -124,6 +124,13 @@ const vehicles = [
   { id: 'flight', name: 'Flight', icon: Plane, pricing: null },
 ];
 
+const currencySymbols: { [key: string]: string } = {
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  INR: '₹',
+};
+
 
 function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementType, title: string, description: string }) {
   return (
@@ -141,22 +148,21 @@ function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementTy
   )
 }
 
-function CurrencyConverter() {
+function CurrencyConverter({ toCurrency, onToCurrencyChange }: { toCurrency: string; onToCurrencyChange: (value: string) => void }) {
   const { toast } = useToast();
   const [amount, setAmount] = React.useState(100);
   const [from, setFrom] = React.useState('USD');
-  const [to, setTo] = React.useState('INR');
   const [converted, setConverted] = React.useState<number | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleConversion = React.useCallback(async () => {
-    if (amount <= 0 || from === to) {
+    if (amount <= 0 || from === toCurrency) {
       setConverted(amount);
       return;
     }
     setIsLoading(true);
     setConverted(null);
-    const result = await convertCurrency({ amount, from, to });
+    const result = await convertCurrency({ amount, from, to: toCurrency });
     if (result.success && result.data) {
       setConverted(result.data.convertedAmount);
     } else {
@@ -168,7 +174,7 @@ function CurrencyConverter() {
       setConverted(null);
     }
     setIsLoading(false);
-  }, [amount, from, to, toast]);
+  }, [amount, from, toCurrency, toast]);
 
   React.useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -212,7 +218,7 @@ function CurrencyConverter() {
           </div>
           <div>
             <Label htmlFor='to'>To</Label>
-            <Select value={to} onValueChange={setTo}>
+            <Select value={toCurrency} onValueChange={onToCurrencyChange}>
               <SelectTrigger id='to' className='w-[80px]'><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="USD">USD</SelectItem>
@@ -298,7 +304,7 @@ function Translator() {
     )
 }
 
-function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
+function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | undefined, currencySymbol: string }) {
   const [kms, setKms] = React.useState(100);
   const [days, setDays] = React.useState(1);
   const [roadType, setRoadType] = React.useState<'highway' | 'ghat'>('highway');
@@ -370,7 +376,7 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
             <Separator />
             <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
                 <span className="font-bold text-lg">Estimated Total Fare</span>
-                <span className="font-bold text-2xl text-primary">₹{totalFare.toLocaleString()}</span>
+                <span className="font-bold text-2xl text-primary">{currencySymbol}{totalFare.toLocaleString()}</span>
             </div>
             <p className='text-xs text-muted-foreground'>This is an estimate. It includes driver charges but excludes tolls, taxes, and other fees.</p>
         </CardContent>
@@ -453,6 +459,7 @@ export default function WorldTourNavigator() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [formValues, setFormValues] = React.useState<FormValues | null>(null);
+  const [toCurrency, setToCurrency] = React.useState('INR');
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -593,6 +600,8 @@ export default function WorldTourNavigator() {
   if (!isMounted) {
     return null;
   }
+
+  const currencySymbol = currencySymbols[toCurrency] || '₹';
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -887,7 +896,7 @@ export default function WorldTourNavigator() {
                         </Form>
                     </CardContent>
                 </Card>
-                <FareCalculator vehicleId={selectedVehicleId} />
+                <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
                 </div>
           )}
 
@@ -990,27 +999,27 @@ export default function WorldTourNavigator() {
                     <CardContent className="space-y-4">
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Tolls</span>
-                            <span className="font-bold text-lg">₹2,800</span>
+                            <span className="font-bold text-lg">{currencySymbol}2,800</span>
                         </div>
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Lodging (3 nights)</span>
-                            <span className="font-bold text-lg">₹15,000</span>
+                            <span className="font-bold text-lg">{currencySymbol}15,000</span>
                         </div>
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Food & Activities</span>
-                            <span className="font-bold text-lg">₹20,000</span>
+                            <span className="font-bold text-lg">{currencySymbol}20,000</span>
                         </div>
                         <Separator />
                          <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary">
                             <span className="font-bold text-lg">Total Estimated Cost</span>
-                            <span className="font-bold text-2xl text-primary">₹37,800</span>
+                            <span className="font-bold text-2xl text-primary">{currencySymbol}37,800</span>
                         </div>
                     </CardContent>
                      <CardFooter>
                         <p className='text-xs text-muted-foreground'>Vehicle rental costs are not included in this estimate. Use the Fare Calculator for vehicle costs.</p>
                     </CardFooter>
                 </Card>
-                <CurrencyConverter />
+                <CurrencyConverter toCurrency={toCurrency} onToCurrencyChange={setToCurrency} />
              </div>
           )}
 
