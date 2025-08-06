@@ -43,6 +43,9 @@ import {
   CalendarDays,
   Camera,
   Upload,
+  Phone,
+  User,
+  Building,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -713,6 +716,7 @@ export default function WorldTourNavigator() {
     { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
+    { id: 'help', label: 'Help', icon: HelpCircle },
   ]
 
   if (!isMounted) {
@@ -739,7 +743,6 @@ export default function WorldTourNavigator() {
                     <SidebarMenuButton 
                         isActive={activeView === item.id} 
                         onClick={() => setActiveView(item.id)}
-                        disabled={item.disabled}
                     >
                         <item.icon />
                         <span>{item.label}</span>
@@ -1119,10 +1122,49 @@ export default function WorldTourNavigator() {
                  </Alert>
             </div>
           )}
+
+          {activeView === 'help' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><HelpCircle/> Contact Us</CardTitle>
+                        <CardDescription>Get in touch with us for any queries or support.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-sm">
+                        <div className="flex items-center gap-4">
+                            <Building className="w-5 h-5 text-muted-foreground" />
+                            <span><span className="font-semibold">Agency:</span> WorldTour Travel Agency</span>
+                        </div>
+                        <Separator/>
+                        <div className="flex items-center gap-4">
+                            <User className="w-5 h-5 text-muted-foreground" />
+                            <span><span className="font-semibold">Contact Person:</span> Gagan</span>
+                        </div>
+                        <Separator/>
+                        <div className="flex items-center gap-4">
+                            <Phone className="w-5 h-5 text-muted-foreground" />
+                            <a href="tel:9025487520" className="text-primary hover:underline">9025487520</a>
+                        </div>
+                        <Separator/>
+                        <div className="flex items-center gap-4">
+                            <MapPin className="w-5 h-5 text-muted-foreground" />
+                            <span><span className="font-semibold">Location:</span> Davanagere</span>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="flex flex-col items-center justify-center">
+                   <Image src="https://placehold.co/400x300.png" data-ai-hint="customer support travel" width={400} height={300} alt="Customer support" className="rounded-t-lg" />
+                   <CardHeader className="text-center">
+                      <CardTitle>We're Here for You!</CardTitle>
+                   </CardHeader>
+                   <CardContent className="text-center text-muted-foreground">
+                      Our team is dedicated to making your travel experience smooth and memorable.
+                   </CardContent>
+                </Card>
+            </div>
+          )}
         </main>
       </SidebarInset>
     </div>
   );
 }
-
-    
