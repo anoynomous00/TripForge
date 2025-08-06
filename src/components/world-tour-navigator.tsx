@@ -719,10 +719,9 @@ export default function WorldTourNavigator() {
     
     if (result.success && result.data) {
         setTripSuggestions(result.data);
-        setActiveView('lodge-booking');
         toast({
-          title: "Trip Details Confirmed!",
-          description: "You can now proceed with your lodge booking.",
+          title: "Suggestions Generated!",
+          description: "Check out the AI-powered route suggestions.",
         });
     } else {
         toast({
@@ -758,7 +757,7 @@ export default function WorldTourNavigator() {
           <div className="flex items-center gap-3 p-2">
             <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
             <h1 className="text-2xl font-bold font-headline uppercase" style={{
-                background: 'linear-gradient(to right, #4f46e5, #7c3aed, #db2777, #f59e0b)',
+                background: 'linear-gradient(to right, #8a2be2, #ff4500, #ffd700)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 2px #000'
