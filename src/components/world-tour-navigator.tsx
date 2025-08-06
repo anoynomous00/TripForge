@@ -36,6 +36,8 @@ import {
   Leaf,
   Siren,
   HelpCircle,
+  Bike,
+  Plane,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -96,16 +98,24 @@ const formSchema = z.object({
   travelers: z.coerce.number().int().min(1, { message: 'At least one traveler is required.' }),
   budget: z.enum(['budget', 'moderate', 'luxury']),
   preferences: z.string().optional(),
-  vehicle: z.enum(['omni', 'tempo', 'bus']),
+  vehicle: z.string({ required_error: 'Please select a vehicle.' }),
   dailyTravelDistance: z.coerce.number().min(50, { message: 'Must travel at least 50 miles daily.' }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 const vehicles = [
-  { id: 'omni', name: 'Omni', capacity: '2-4', image: 'https://placehold.co/400x300.png', hint: 'white van' },
-  { id: 'tempo', name: 'Tempo Traveller', capacity: '5-12', image: 'https://placehold.co/400x300.png', hint: 'white minibus' },
-  { id: 'bus', name: 'Bus', capacity: '13+', image: 'https://placehold.co/400x300.png', hint: 'tourist bus' },
+    { id: 'bike', name: 'Bike', icon: Bike, image: 'https://placehold.co/400x300.png', hint: 'motorcycle road trip' },
+    { id: 'scooty', name: 'Scooty', icon: Bike, image: 'https://placehold.co/400x300.png', hint: 'scooter city' },
+    { id: 'swift', name: 'Swift', icon: Car, image: 'https://placehold.co/400x300.png', hint: 'white hatchback car' },
+    { id: 'etios', name: 'Etios', icon: Car, image: 'https://placehold.co/400x300.png', hint: 'white sedan car' },
+    { id: 'eeco', name: 'Eeco', icon: Car, image: 'https://placehold.co/400x300.png', hint: 'white utility van' },
+    { id: 'ertiga', name: 'Ertiga', icon: Car, image: 'https://placehold.co/400x300.png', hint: 'blue mpv car' },
+    { id: 'innova', name: 'Innova', icon: Car, image: 'https://placehold.co/400x300.png', hint: 'black suv car' },
+    { id: 'mini-bus', name: 'Mini Bus', icon: Bus, image: 'https://placehold.co/400x300.png', hint: 'white minibus' },
+    { id: '18-seater', name: '18-Seater Bus', icon: Bus, image: 'https://placehold.co/400x300.png', hint: 'small tourist bus' },
+    { id: '33-seater', name: '33-Seater Bus', icon: Bus, image: 'https://placehold.co/400x300.png', hint: 'large coach bus' },
+    { id: 'flight', name: 'Flight', icon: Plane, image: 'https://placehold.co/400x300.png', hint: 'airplane window view' },
 ];
 
 function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementType, title: string, description: string }) {
@@ -230,7 +240,7 @@ export default function WorldTourNavigator() {
       travelers: 1,
       budget: 'moderate',
       preferences: '',
-      vehicle: 'tempo',
+      vehicle: undefined,
       dailyTravelDistance: 300,
     },
   });
@@ -347,7 +357,9 @@ export default function WorldTourNavigator() {
 
   const menuItems = [
     { id: 'plan', label: 'Plan Trip', icon: Waypoints },
+    { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
+    { id: 'booking', label: 'Vehicle Booking', icon: ShieldCheck, disabled: true },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'tools', label: 'Tools', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
@@ -412,11 +424,11 @@ export default function WorldTourNavigator() {
                         <CardTitle className="font-headline flex items-center gap-2 text-2xl">
                             <Waypoints /> Your Adventure Details
                         </CardTitle>
-                        <CardDescription>Fill in the details below to get started.</CardDescription>
+                        <CardDescription>Fill in the details below to get started. Choose your vehicle in the next step.</CardDescription>
                         </CardHeader>
                         <CardContent>
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <form onSubmit={(e) => { e.preventDefault(); setActiveView('vehicle'); }} className="space-y-6">
                             
                             <div className='space-y-4'>
                                 <h3 className='font-semibold flex items-center gap-2'><MapPin /> Trip Details</h3>
@@ -529,6 +541,19 @@ export default function WorldTourNavigator() {
                                     )}
                                 />
                                 </div>
+                                 <FormField
+                                    control={form.control}
+                                    name="dailyTravelDistance"
+                                    render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Daily Miles</FormLabel>
+                                        <FormControl>
+                                        <Input type="number" placeholder="e.g., 300" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
                                 <FormField
                                 control={form.control}
                                 name="preferences"
@@ -543,67 +568,9 @@ export default function WorldTourNavigator() {
                                 )}
                                 />
                             </div>
-
-                             <Separator />
-
-                            <div className='space-y-4'>
-                                <h3 className='font-semibold flex items-center gap-2'><Car /> Vehicle & Pace</h3>
-                                <FormField
-                                    control={form.control}
-                                    name="dailyTravelDistance"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Daily Miles</FormLabel>
-                                        <FormControl>
-                                        <Input type="number" placeholder="e.g., 300" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="vehicle"
-                                    render={({ field }) => (
-                                    <FormItem className="space-y-3">
-                                        <FormLabel>Vehicle Choice</FormLabel>
-                                        <FormControl>
-                                        <RadioGroup
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2"
-                                        >
-                                            {vehicles.map(vehicle => (
-                                            <FormItem key={vehicle.id}>
-                                                <FormControl>
-                                                <RadioGroupItem value={vehicle.id} className="sr-only" />
-                                                </FormControl>
-                                                <FormLabel className={cn(
-                                                "flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer aspect-square",
-                                                field.value === vehicle.id && "border-primary"
-                                                )}>
-                                                <Image src={vehicle.image} alt={vehicle.name} width={100} height={75} className='rounded-md object-cover flex-grow' data-ai-hint={vehicle.hint}/>
-                                                <span className="font-bold mt-2">{vehicle.name}</span>
-                                                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                                    <Users className="w-3 h-3"/> {vehicle.capacity}
-                                                </span>
-                                                </FormLabel>
-                                            </FormItem>
-                                            ))}
-                                        </RadioGroup>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
-                            </div>
-                            
-                            <Button type="submit" className="w-full !mt-8" size="lg" disabled={isSubmitting}>
-                                {isSubmitting ? (
-                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</>
-                                ) : (
-                                    <><Sparkles className="mr-2 h-4 w-4" /> Generate Smart Trip</>
-                                )}
+                                                        
+                            <Button type="submit" className="w-full !mt-8" size="lg">
+                                Next: Choose Vehicle <ChevronRight className="ml-2 h-4 w-4" />
                             </Button>
                             </form>
                         </Form>
@@ -620,6 +587,63 @@ export default function WorldTourNavigator() {
                     </Card>
                 </div>
             </div>
+          )}
+
+          {activeView === 'vehicle' && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline flex items-center gap-2 text-2xl"><Car /> Select Your Vehicle</CardTitle>
+                        <CardDescription>Choose the best ride for your adventure.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                         <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                <FormField
+                                    control={form.control}
+                                    name="vehicle"
+                                    render={({ field }) => (
+                                    <FormItem className="space-y-3">
+                                        <FormControl>
+                                        <RadioGroup
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2"
+                                        >
+                                            {vehicles.map(vehicle => (
+                                            <FormItem key={vehicle.id}>
+                                                <FormControl>
+                                                <RadioGroupItem value={vehicle.id} className="sr-only" />
+                                                </FormControl>
+                                                <FormLabel className={cn(
+                                                "flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer aspect-square transition-all duration-200",
+                                                field.value === vehicle.id && "border-primary ring-2 ring-primary"
+                                                )}>
+                                                <Image src={vehicle.image} alt={vehicle.name} width={120} height={90} className='rounded-md object-cover flex-grow w-full' data-ai-hint={vehicle.hint}/>
+                                                <span className="font-bold mt-2 text-center">{vehicle.name}</span>
+                                                <vehicle.icon className="w-5 h-5 text-muted-foreground mt-1"/>
+                                                </FormLabel>
+                                            </FormItem>
+                                            ))}
+                                        </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
+                                <div className="flex justify-between items-center !mt-8">
+                                    <Button variant="outline" onClick={() => setActiveView('plan')}>Back</Button>
+                                    <Button type="submit" size="lg" disabled={isSubmitting}>
+                                        {isSubmitting ? (
+                                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</>
+                                        ) : (
+                                            <><Sparkles className="mr-2 h-4 w-4" /> Generate Smart Trip</>
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
           )}
 
           {activeView === 'results' && (
@@ -774,6 +798,17 @@ export default function WorldTourNavigator() {
                     </AlertDescription>
                 </Alert>
             </div>
+          )}
+           {activeView === 'booking' && (
+             <div className="text-center">
+                 <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
+                    <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="A stylized illustration of a map and a car" className="mb-6 rounded-lg" data-ai-hint="online booking confirmation"/>
+                    <h2 className="text-2xl font-bold font-headline text-primary-dark">Vehicle Booking Coming Soon</h2>
+                    <p className="text-muted-foreground mt-2 max-w-md">
+                        This section will allow you to book your chosen vehicle directly through our partners. Stay tuned!
+                    </p>
+                </Card>
+             </div>
           )}
         </main>
       </SidebarInset>
