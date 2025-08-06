@@ -83,9 +83,11 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMounted } from '@/hooks/use-mobile';
 import { generateSuggestions } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { Textarea } from './ui/textarea';
+import { Label } from './ui/label';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -213,6 +215,7 @@ function Translator() {
 
 export default function WorldTourNavigator() {
   const { toast } = useToast();
+  const isMounted = useIsMounted();
   const [activeView, setActiveView] = React.useState('plan');
   const [tripResults, setTripResults] = React.useState<SmartStaySuggestionsOutput | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -233,6 +236,7 @@ export default function WorldTourNavigator() {
   });
 
   React.useEffect(() => {
+    if (!isMounted) return;
     try {
       const savedTrip = localStorage.getItem('worldtour_trip');
       if (savedTrip) {
@@ -254,7 +258,7 @@ export default function WorldTourNavigator() {
     } catch (e) {
       console.error('Failed to load trip from localStorage', e);
     }
-  }, [form, toast]);
+  }, [isMounted, form, toast]);
 
   const handleSaveTrip = () => {
     if (!formValues) {
@@ -348,6 +352,10 @@ export default function WorldTourNavigator() {
     { id: 'tools', label: 'Tools', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
   ]
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -765,9 +773,8 @@ export default function WorldTourNavigator() {
                         We're working on adding verified listings, dietary filters, detailed expense tracking, and more to make your trip planning even better.
                     </AlertDescription>
                 </Alert>
-             </div>
+            </div>
           )}
-
         </main>
       </SidebarInset>
     </div>
