@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -114,6 +113,7 @@ import { Switch } from './ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import type { PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import MyMap from './ui/map';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -1062,6 +1062,7 @@ export default function TripforgeNavigator() {
     { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
+    { id: 'navigation', label: 'Navigation', icon: Map },
     { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'help', label: 'Help', icon: HelpCircle },
   ]
@@ -1509,6 +1510,20 @@ export default function TripforgeNavigator() {
             </div>
           )}
 
+          {activeView === 'navigation' && (
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Live Map</CardTitle>
+                  <CardDescription>Explore your destination. Note: A valid Google Maps API key is required for this map to function correctly.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <MyMap />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {activeView === 'help' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card>
@@ -1564,4 +1579,3 @@ export default function TripforgeNavigator() {
     </div>
   );
 }
-
