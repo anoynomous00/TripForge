@@ -120,9 +120,13 @@ const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
   destination: z.string().min(2, { message: 'Destination is required.' }),
   tripStartDate: z.date({ required_error: 'A start date is required.' }),
+  tripEndDate: z.date({ required_error: 'An end date is required.' }),
   travelers: z.coerce.number().int().min(1, { message: 'At least one traveler is required.' }),
   budget: z.enum(['budget', 'moderate', 'luxury']),
   preferences: z.string().optional(),
+}).refine(data => data.tripEndDate >= data.tripStartDate, {
+    message: "End date cannot be before start date.",
+    path: ["tripEndDate"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -1108,6 +1112,7 @@ export default function TripforgeNavigator() {
     const input = {
       ...values,
       tripStartDate: format(values.tripStartDate, 'yyyy-MM-dd'),
+      tripEndDate: format(values.tripEndDate, 'yyyy-MM-dd'),
     };
     const result = await generateSuggestions(input);
     if (result.success && result.data) {
@@ -1127,6 +1132,7 @@ export default function TripforgeNavigator() {
     const input = {
       ...values,
       tripStartDate: format(values.tripStartDate, 'yyyy-MM-dd'),
+      tripEndDate: format(values.tripEndDate, 'yyyy-MM-dd'),
     };
 
     const result = await generateSuggestions(input); 
@@ -1262,6 +1268,7 @@ export default function TripforgeNavigator() {
                                         )}
                                     />
                                     </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                     control={form.control}
                                     name="tripStartDate"
@@ -1301,6 +1308,46 @@ export default function TripforgeNavigator() {
                                         </FormItem>
                                     )}
                                     />
+                                    <FormField
+                                    control={form.control}
+                                    name="tripEndDate"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col">
+                                        <FormLabel>End Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-full pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                                >
+                                                {field.value ? (
+                                                    format(field.value, 'PPP')
+                                                ) : (
+                                                    <span>Pick a date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) => date < (form.getValues("tripStartDate") || new Date(new Date().setHours(0,0,0,0)))}
+                                                initialFocus
+                                            />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                    />
+                                    </div>
                                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                         control={form.control}
