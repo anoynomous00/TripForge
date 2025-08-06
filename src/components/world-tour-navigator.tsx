@@ -879,13 +879,13 @@ export default function WorldTourNavigator() {
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
-    { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'vehicle-selection', label: 'Vehicle Selection', icon: Car },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
+    { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'help', label: 'Help', icon: HelpCircle },
   ]
 
@@ -1173,7 +1173,7 @@ export default function WorldTourNavigator() {
                             <CardTitle className='flex items-center gap-2'><Car/> Select Vehicle</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='space-y-2'>
+                            <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                                 {vehicles.map(v => (
                                     <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
                                         <RadioGroupItem value={v.id} />
