@@ -5,6 +5,7 @@ import { getSmartStaySuggestions, type SmartStaySuggestionsInput, type SmartStay
 import { translate, type TranslateInput, type TranslateOutput } from '@/ai/flows/translate-text-flow';
 import { convert, type CurrencyConverterInput, type CurrencyConverterOutput } from '@/ai/flows/currency-converter-flow';
 import { suggestPlaces, type PlaceSuggesterInput, type PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
+import { getRouteDetails, type RouteDetailsInput, type RouteDetailsOutput } from '@/ai/flows/route-details-flow';
 
 
 export async function generateSuggestions(
@@ -69,4 +70,18 @@ export async function generatePlaceSuggestions(
     }
   }
 
+  export async function fetchRouteDetails(
+    input: RouteDetailsInput
+  ): Promise<{ success: boolean; data?: RouteDetailsOutput; error?: string }> {
+    try {
+      const result = await getRouteDetails(input);
+      if (!result) {
+        return { success: false, error: 'Could not fetch route details. The model returned an unexpected response.' };
+      }
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Error in fetchRouteDetails action:', error);
+      return { success: false, error: 'An unexpected error occurred while fetching route details.' };
+    }
+  }
     

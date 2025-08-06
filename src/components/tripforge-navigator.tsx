@@ -106,7 +106,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMounted } from '@/hooks/use-mobile';
-import { generateSuggestions, translateText, convertCurrency, generatePlaceSuggestions } from '@/app/actions';
+import { generateSuggestions, translateText, convertCurrency, generatePlaceSuggestions, fetchRouteDetails } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
@@ -114,6 +114,7 @@ import { Switch } from './ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import type { PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import type { RouteDetailsOutput } from '@/ai/flows/route-details-flow';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -971,6 +972,95 @@ function FlightBookingForm({ onBook }: { onBook: (booking: Omit<Booking, 'id'>) 
   )
 }
 
+function NavigationPage({ currentLocation, destination }: { currentLocation: string; destination: string; }) {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [details, setDetails] = React.useState<RouteDetailsOutput | null>(null);
+
+  React.useEffect(() => {
+    async function getDetails() {
+      if (currentLocation && destination) {
+        setIsLoading(true);
+        setDetails(null);
+        const result = await fetchRouteDetails({ source: currentLocation, destination });
+        if (result.success && result.data) {
+          setDetails(result.data);
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Failed to get details',
+            description: result.error,
+          });
+        }
+        setIsLoading(false);
+      }
+    }
+    getDetails();
+  }, [currentLocation, destination, toast]);
+
+  const handleNavigate = () => {
+    if (currentLocation && destination) {
+        const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentLocation)}&destination=${encodeURIComponent(destination)}`;
+        window.open(url, '_blank');
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Missing Information',
+            description: 'Please enter a source and destination in Trip Details first.',
+        });
+    }
+  };
+
+  return (
+      <Card>
+          <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Map/> Live Navigation</CardTitle>
+              <CardDescription>Review your route details and open in Google Maps for turn-by-turn directions.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+              <div className='p-4 border rounded-lg space-y-4'>
+                  <div>
+                      <p className='text-sm text-muted-foreground'>From</p>
+                      <p className='font-semibold text-lg'>{currentLocation || 'Not set'}</p>
+                  </div>
+                  <Separator />
+                  <div>
+                      <p className='text-sm text-muted-foreground'>To</p>
+                      <p className='font-semibold text-lg'>{destination || 'Not set'}</p>
+                  </div>
+              </div>
+              
+              {isLoading && (
+                  <div className="space-y-4">
+                      <Skeleton className="h-8 w-3/4" />
+                      <Skeleton className="h-8 w-1/2" />
+                      <Skeleton className="h-8 w-2/3" />
+                  </div>
+              )}
+              
+              {details && (
+                  <div className='p-4 border rounded-lg space-y-4 text-lg'>
+                      <p><strong className='underline'>Time to reach:</strong> {details.timeTaken}</p>
+                      <p><strong className='underline'>Weather:</strong> {details.weatherReport}</p>
+                      <p><strong className='underline'>Number of Tolls:</strong> {details.numberOfTolls}</p>
+                      <p><strong className='underline'>Estimated Toll Price:</strong> {details.tollPrice}</p>
+                  </div>
+              )}
+
+               <Button size="lg" className="w-full" onClick={handleNavigate} disabled={!currentLocation || !destination}>
+                  <Waypoints className="mr-2 h-5 w-5" />
+                  Navigate on Google Maps
+              </Button>
+          </CardContent>
+          <CardFooter>
+              <p className='text-xs text-muted-foreground'>
+                  Note: AI-generated details are estimates. Live navigation will open in a new tab.
+              </p>
+          </CardFooter>
+      </Card>
+  )
+}
+
 export default function TripforgeNavigator() {
   const { toast } = useToast();
   const isMounted = useIsMounted();
@@ -1080,19 +1170,6 @@ export default function TripforgeNavigator() {
 
   const twoWheelers = vehicles.filter(v => v.type === 'two-wheeler');
   const fourWheelers = vehicles.filter(v => v.type === 'four-wheeler');
-
-  const handleNavigate = () => {
-    if (currentLocation && destination) {
-        const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentLocation)}&destination=${encodeURIComponent(destination)}`;
-        window.open(url, '_blank');
-    } else {
-        toast({
-            variant: 'destructive',
-            title: 'Missing Information',
-            description: 'Please enter a source and destination in Trip Details first.',
-        });
-    }
-  };
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -1361,34 +1438,7 @@ export default function TripforgeNavigator() {
           )}
           
           {activeView === 'navigation' && (
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Map/> Live Navigation</CardTitle>
-                    <CardDescription>Open your route in Google Maps for real-time, turn-by-turn directions.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className='p-4 border rounded-lg space-y-2'>
-                        <div>
-                            <p className='text-sm text-muted-foreground'>From</p>
-                            <p className='font-semibold'>{currentLocation || 'Not set'}</p>
-                        </div>
-                        <Separator />
-                        <div>
-                            <p className='text-sm text-muted-foreground'>To</p>
-                            <p className='font-semibold'>{destination || 'Not set'}</p>
-                        </div>
-                    </div>
-                     <Button size="lg" className="w-full" onClick={handleNavigate} disabled={!currentLocation || !destination}>
-                        <Waypoints className="mr-2 h-5 w-5" />
-                        Navigate on Google Maps
-                    </Button>
-                </CardContent>
-                <CardFooter>
-                    <p className='text-xs text-muted-foreground'>
-                        Note: This will open Google Maps in a new tab. Please ensure you have an internet connection.
-                    </p>
-                </CardFooter>
-            </Card>
+            <NavigationPage currentLocation={currentLocation} destination={destination} />
           )}
 
           {activeView === 'place-suggester' && (
