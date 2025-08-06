@@ -993,7 +993,7 @@ export default function WorldTourNavigator() {
             <h1
               className="text-2xl font-bold"
               style={{
-                backgroundImage: 'linear-gradient(to right, #facc15, #ef4444, #a855f7)',
+                backgroundImage: 'linear-gradient(to right, #facc15, #ef4444, #a855f7, #22c55e)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}

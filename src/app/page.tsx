@@ -20,14 +20,16 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
     <div className="relative flex flex-col items-center justify-center h-screen bg-black text-white overflow-hidden">
       <div className="absolute top-4 right-6 z-20">
         <p 
-          className="font-headline text-2xl font-bold lowercase"
+          className="font-headline text-2xl font-bold lowercase animate-long-fade-in"
           style={{
-            backgroundImage: 'linear-gradient(to right, #f85032, #e73827, #e73827, #f85032, #f5c62d, #f85032)',
+            backgroundImage: 'linear-gradient(to right, #fde047, #f87171, #fca5a5)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
+            animationDelay: '1.5s',
+            animationDuration: '1s'
           }}
         >
-          dvg travels
+          TRIPFORGE
         </p>
       </div>
       <div className="absolute inset-0 z-0">
