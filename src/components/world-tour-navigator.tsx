@@ -572,6 +572,95 @@ function FamilyOfferCard() {
     );
   }
 
+const lodgingPrices = {
+  ac: {
+    '2': 2500,
+    '3': 3500,
+    '4': 4500,
+  },
+  nonAc: {
+    '2': 1500,
+    '3': 2500,
+    '4': 3500,
+  },
+};
+
+type RoomType = 'ac' | 'nonAc';
+type SharingType = '2' | '3' | '4';
+
+function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
+  const [roomType, setRoomType] = React.useState<RoomType>('nonAc');
+  const [sharing, setSharing] = React.useState<SharingType>('2');
+  const [nights, setNights] = React.useState(1);
+  const [rooms, setRooms] = React.useState(1);
+
+  const pricePerNight = lodgingPrices[roomType][sharing];
+  const totalCost = pricePerNight * nights * rooms;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><BedDouble /> Lodge Booking</CardTitle>
+        <CardDescription>Configure your stay and estimate the cost.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Room Type</Label>
+            <RadioGroup value={roomType} onValueChange={(val: RoomType) => setRoomType(val)} className="flex gap-4 pt-1">
+              <Label className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="nonAc" /> Non-AC
+              </Label>
+              <Label className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="ac" /> AC
+              </Label>
+            </RadioGroup>
+          </div>
+          <div className="space-y-2">
+            <Label>Sharing Capacity</Label>
+            <RadioGroup value={sharing} onValueChange={(val: SharingType) => setSharing(val)} className="grid grid-cols-3 gap-4 pt-1">
+              {['2', '3', '4'].map(num => (
+                <Label
+                  key={num}
+                  className={cn(
+                    'flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all',
+                    sharing === num && 'border-primary ring-2 ring-primary'
+                  )}
+                >
+                  <Users className="w-8 h-8 mb-1" />
+                  <span className="font-bold">{num} Sharing</span>
+                  <span className="text-xs text-muted-foreground">{currencySymbol}{lodgingPrices[roomType][num as SharingType]}/night</span>
+                </Label>
+              ))}
+            </RadioGroup>
+          </div>
+        </div>
+
+        <Separator />
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="nights">Number of Nights</Label>
+            <Input id="nights" type="number" value={nights} onChange={e => setNights(Math.max(1, Number(e.target.value)))} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="rooms">Number of Rooms</Label>
+            <Input id="rooms" type="number" value={rooms} onChange={e => setRooms(Math.max(1, Number(e.target.value)))} />
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
+          <span className="font-bold text-lg">Total Lodging Cost</span>
+          <span className="font-bold text-2xl text-primary">{currencySymbol}{totalCost.toLocaleString()}</span>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">Book Lodge (Placeholder)</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+
 
 export default function WorldTourNavigator() {
   const { toast } = useToast();
@@ -713,6 +802,7 @@ export default function WorldTourNavigator() {
     { id: 'traveler-preferences', label: 'Traveler Preferences', icon: Users },
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
+    { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
@@ -1021,6 +1111,41 @@ export default function WorldTourNavigator() {
                 <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
                 </div>
           )}
+          
+          {activeView === 'lodge-booking' && (
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                <LodgeBookingCard currencySymbol={currencySymbol} />
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Why Book With Us?</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className='flex items-start gap-4'>
+                            <ShieldCheck className='w-8 h-8 text-primary mt-1'/>
+                            <div>
+                                <h3 className='font-semibold'>Verified Stays</h3>
+                                <p className='text-muted-foreground'>Every property is hand-picked and verified by our team for quality and safety.</p>
+                            </div>
+                        </div>
+                        <div className='flex items-start gap-4'>
+                            <TrendingUp className='w-8 h-8 text-primary mt-1'/>
+                            <div>
+                                <h3 className='font-semibold'>Best Price Guarantee</h3>
+                                <p className='text-muted-foreground'>We ensure you get the best possible rates for your chosen accommodation.</p>
+                            </div>
+                        </div>
+                         <div className='flex items-start gap-4'>
+                            <HelpCircle className='w-8 h-8 text-primary mt-1'/>
+                            <div>
+                                <h3 className='font-semibold'>24/7 Support</h3>
+                                <p className='text-muted-foreground'>Our support team is always available to assist you with any booking-related queries.</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+          )}
+
 
           {activeView === 'results' && (
             <div className="space-y-8">
