@@ -38,6 +38,8 @@ import {
   HelpCircle,
   Bike,
   Plane,
+  Calculator,
+  CalendarDays,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -105,17 +107,17 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const vehicles = [
-  { id: 'bike', name: 'Bike', icon: Bike, image: 'https://placehold.co/120x91.png', hint: 'motorcycle road trip' },
-  { id: 'scooty', name: 'Scooty', icon: Bike, image: 'https://placehold.co/120x92.png', hint: 'scooter city' },
-  { id: 'swift', name: 'Swift', icon: Car, image: 'https://placehold.co/120x93.png', hint: 'white hatchback car' },
-  { id: 'etios', name: 'Etios', icon: Car, image: 'https://placehold.co/120x94.png', hint: 'white sedan car' },
-  { id: 'eeco', name: 'Eeco', icon: Car, image: 'https://placehold.co/120x95.png', hint: 'white utility van' },
-  { id: 'ertiga', name: 'Ertiga', icon: Car, image: 'https://placehold.co/120x96.png', hint: 'blue mpv car' },
-  { id: 'innova', name: 'Innova', icon: Car, image: 'https://placehold.co/120x97.png', hint: 'black suv car' },
-  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, image: 'https://placehold.co/120x98.png', hint: 'white minibus' },
-  { id: '18-seater', name: '18-Seater Bus', icon: Bus, image: 'https://placehold.co/120x99.png', hint: 'small tourist bus' },
-  { id: '33-seater', name: '33-Seater Bus', icon: Bus, image: 'https://placehold.co/120x100.png', hint: 'large coach bus' },
-  { id: 'flight', name: 'Flight', icon: Plane, image: 'https://placehold.co/120x101.png', hint: 'airplane window view' },
+  { id: 'bike', name: 'Bike', icon: Bike, pricing: { highway: 7, ghat: 7, driver: 300 } },
+  { id: 'scooty', name: 'Scooty', icon: Bike, pricing: { highway: 7, ghat: 7, driver: 300 } },
+  { id: 'swift', name: 'Swift', icon: Car, pricing: { highway: 10, ghat: 11, driver: 500 } },
+  { id: 'etios', name: 'Etios', icon: Car, pricing: { highway: 10, ghat: 10.5, driver: 500 } },
+  { id: 'eeco', name: 'Eeco', icon: Car, pricing: { highway: 10, ghat: 10.5, driver: 500 } },
+  { id: 'ertiga', name: 'Ertiga', icon: Car, pricing: { highway: 15, ghat: 16, driver: 500 } },
+  { id: 'innova', name: 'Innova', icon: Car, pricing: { highway: 15, ghat: 16, driver: 500 } },
+  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, pricing: { highway: 22, ghat: 24, driver: 800 } },
+  { id: '18-seater', name: '18-Seater Bus', icon: Bus, pricing: { highway: 22, ghat: 24, driver: 800 } },
+  { id: '33-seater', name: '33-Seater Bus', icon: Bus, pricing: { highway: 32, ghat: 35, driver: 800 } },
+  { id: 'flight', name: 'Flight', icon: Plane, pricing: null },
 ];
 
 
@@ -224,6 +226,79 @@ function Translator() {
     )
 }
 
+function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
+  const [kms, setKms] = React.useState(100);
+  const [days, setDays] = React.useState(1);
+  const [roadType, setRoadType] = React.useState<'highway' | 'ghat'>('highway');
+  const [totalFare, setTotalFare] = React.useState(0);
+
+  const selectedVehicle = React.useMemo(() => {
+    return vehicles.find(v => v.id === vehicleId);
+  }, [vehicleId]);
+
+  React.useEffect(() => {
+    if (!selectedVehicle || !selectedVehicle.pricing) {
+      setTotalFare(0);
+      return;
+    }
+    const { pricing } = selectedVehicle;
+    const rate = pricing[roadType];
+    const fare = (kms * rate) + (days * pricing.driver);
+    setTotalFare(fare);
+  }, [kms, days, roadType, selectedVehicle]);
+  
+  if (!selectedVehicle || !selectedVehicle.pricing) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Calculator /> Fare Calculator</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center text-muted-foreground h-48">
+                <p>Please select a vehicle to calculate the fare.</p>
+            </CardContent>
+        </Card>
+    )
+  }
+
+  return (
+    <Card>
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Calculator /> Fare Calculator</CardTitle>
+            <CardDescription>Estimate your travel cost for the <span className='font-bold text-primary'>{selectedVehicle.name}</span>.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+            <div className='grid grid-cols-2 gap-4'>
+                <FormItem>
+                    <FormLabel className='flex items-center gap-2'><Waypoints/> Road Type</FormLabel>
+                    <Select onValueChange={(value: 'highway' | 'ghat') => setRoadType(value)} defaultValue={roadType}>
+                        <SelectTrigger><SelectValue/></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="highway">Highway</SelectItem>
+                            <SelectItem value="ghat">Ghat</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </FormItem>
+                 <FormItem>
+                    <FormLabel className='flex items-center gap-2'><Waypoints /> Kilometers</FormLabel>
+                    <Input type="number" value={kms} onChange={(e) => setKms(Number(e.target.value))}/>
+                </FormItem>
+                 <FormItem>
+                    <FormLabel className='flex items-center gap-2'><CalendarDays /> Days</FormLabel>
+                    <Input type="number" value={days} onChange={(e) => setDays(Number(e.target.value))} />
+                </FormItem>
+            </div>
+            <Separator />
+            <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
+                <span className="font-bold text-lg">Estimated Total Fare</span>
+                <span className="font-bold text-2xl text-primary">₹{totalFare.toLocaleString()}</span>
+            </div>
+            <p className='text-xs text-muted-foreground'>This is an estimate. It includes driver charges but excludes tolls, taxes, and other fees.</p>
+        </CardContent>
+    </Card>
+  )
+}
+
+
 export default function WorldTourNavigator() {
   const { toast } = useToast();
   const isMounted = useIsMounted();
@@ -245,6 +320,8 @@ export default function WorldTourNavigator() {
       dailyTravelDistance: 300,
     },
   });
+  
+  const selectedVehicleId = form.watch('vehicle');
 
   React.useEffect(() => {
     if (!isMounted) return;
@@ -602,6 +679,7 @@ export default function WorldTourNavigator() {
           )}
 
           {activeView === 'vehicle' && (
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
                 <Card>
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2 text-2xl"><Car /> Select Your Vehicle</CardTitle>
@@ -619,7 +697,7 @@ export default function WorldTourNavigator() {
                                         <RadioGroup
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
-                                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2"
+                                            className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-2"
                                         >
                                             {vehicles.map(vehicle => (
                                             <FormItem key={vehicle.id}>
@@ -634,6 +712,11 @@ export default function WorldTourNavigator() {
                                                   <vehicle.icon className="w-16 h-16 text-primary" />
                                                 </div>
                                                 <span className="font-bold mt-2 text-center">{vehicle.name}</span>
+                                                 {vehicle.pricing && (
+                                                    <span className='text-xs text-muted-foreground mt-1'>
+                                                        ₹{vehicle.pricing.highway}/km
+                                                    </span>
+                                                 )}
                                                 </FormLabel>
                                             </FormItem>
                                             ))}
@@ -645,7 +728,7 @@ export default function WorldTourNavigator() {
                                 />
                                 <div className="flex justify-between items-center !mt-8">
                                     <Button variant="outline" onClick={() => setActiveView('traveler-preferences')}>Back</Button>
-                                    <Button type="submit" size="lg" disabled={isSubmitting}>
+                                    <Button type="submit" size="lg" disabled={isSubmitting || !selectedVehicleId}>
                                         {isSubmitting ? (
                                             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</>
                                         ) : (
@@ -657,6 +740,8 @@ export default function WorldTourNavigator() {
                         </Form>
                     </CardContent>
                 </Card>
+                <FareCalculator vehicleId={selectedVehicleId} />
+                </div>
           )}
 
           {activeView === 'results' && (
@@ -756,10 +841,6 @@ export default function WorldTourNavigator() {
                         <CardDescription>An estimated breakdown of your trip costs.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-                            <span className="font-medium">Estimated Fuel</span>
-                            <span className="font-bold text-lg">$250.00</span>
-                        </div>
                          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
                             <span className="font-medium">Tolls</span>
                             <span className="font-bold text-lg">$34.50</span>
@@ -775,9 +856,12 @@ export default function WorldTourNavigator() {
                         <Separator />
                          <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary">
                             <span className="font-bold text-lg">Total Estimated Cost</span>
-                            <span className="font-bold text-2xl text-primary">$1334.50</span>
+                            <span className="font-bold text-2xl text-primary">$1084.50</span>
                         </div>
                     </CardContent>
+                     <CardFooter>
+                        <p className='text-xs text-muted-foreground'>Vehicle rental costs are not included in this estimate. Use the Fare Calculator for vehicle costs.</p>
+                    </CardFooter>
                 </Card>
                 <CurrencyConverter />
              </div>
