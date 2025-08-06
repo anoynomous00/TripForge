@@ -110,7 +110,6 @@ const formSchema = z.object({
   travelers: z.coerce.number().int().min(1, { message: 'At least one traveler is required.' }),
   budget: z.enum(['budget', 'moderate', 'luxury']),
   preferences: z.string().optional(),
-  dailyTravelDistance: z.coerce.number().min(50, { message: 'Must travel at least 50 miles daily.' }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -684,7 +683,6 @@ export default function WorldTourNavigator() {
       travelers: 1,
       budget: 'moderate',
       preferences: '',
-      dailyTravelDistance: 300,
     },
   });
   
@@ -911,19 +909,6 @@ export default function WorldTourNavigator() {
                                         )}
                                     />
                                     </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="dailyTravelDistance"
-                                        render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Daily Miles</FormLabel>
-                                            <FormControl>
-                                            <Input type="number" placeholder="e.g., 300" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                        )}
-                                    />
                                     <FormField
                                     control={form.control}
                                     name="preferences"
@@ -1176,5 +1161,3 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
-
-    
