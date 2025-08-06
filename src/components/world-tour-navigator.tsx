@@ -91,7 +91,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMounted } from '@/hooks/use-mobile';
-import { generateSuggestions, translateText } from '@/app/actions';
+import { generateSuggestions, translateText, convertCurrency } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
@@ -142,10 +142,42 @@ function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementTy
 }
 
 function CurrencyConverter() {
+  const { toast } = useToast();
   const [amount, setAmount] = React.useState(100);
   const [from, setFrom] = React.useState('USD');
   const [to, setTo] = React.useState('INR');
-  const [converted, setConverted] = React.useState(8350); // Dummy data
+  const [converted, setConverted] = React.useState<number | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleConversion = React.useCallback(async () => {
+    if (amount <= 0 || from === to) {
+      setConverted(amount);
+      return;
+    }
+    setIsLoading(true);
+    setConverted(null);
+    const result = await convertCurrency({ amount, from, to });
+    if (result.success && result.data) {
+      setConverted(result.data.convertedAmount);
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Conversion Failed',
+        description: result.error,
+      });
+      setConverted(null);
+    }
+    setIsLoading(false);
+  }, [amount, from, to, toast]);
+
+  React.useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      handleConversion();
+    }, 500); // Debounce API calls
+
+    return () => clearTimeout(debounceTimer);
+  }, [handleConversion]);
+
 
   return (
     <Card>
@@ -173,9 +205,10 @@ function CurrencyConverter() {
         </div>
         <div className='text-center text-muted-foreground'>TO</div>
         <div className='flex items-end gap-2'>
-          <div className='flex-1'>
+          <div className='flex-1 relative'>
             <Label htmlFor='to-amount'>Converted Amount</Label>
-            <Input id="to-amount" type="number" value={converted.toFixed(2)} readOnly className='font-bold text-lg' />
+            <Input id="to-amount" type="number" value={converted?.toFixed(2) || ''} readOnly className='font-bold text-lg' placeholder='Converting...'/>
+            {isLoading && <Loader2 className="absolute right-3 top-9 h-4 w-4 animate-spin" />}
           </div>
           <div>
             <Label htmlFor='to'>To</Label>
@@ -192,7 +225,7 @@ function CurrencyConverter() {
         </div>
       </CardContent>
       <CardFooter>
-        <p className='text-xs text-muted-foreground'>Rates are for demonstration purposes only.</p>
+        <p className='text-xs text-muted-foreground'>Live exchange rates are used for conversion.</p>
       </CardFooter>
     </Card>
   )
@@ -1041,3 +1074,5 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
+
+    
