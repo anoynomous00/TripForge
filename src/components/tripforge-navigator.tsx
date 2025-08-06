@@ -1023,7 +1023,7 @@ export default function TripforgeNavigator() {
     { id: 'vehicle-selection', label: 'Vehicle Selection', icon: Car },
     { id: 'bookings', label: 'Bookings', icon: BookOpenCheck },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
-    { id: 'budget', label: 'Budget', icon: Wallet },
+    { id: 'converter', label: 'Converter', icon: ArrowLeftRight },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'help', label: 'Help', icon: HelpCircle },
@@ -1471,7 +1471,7 @@ export default function TripforgeNavigator() {
             </div>
           )}
 
-          {activeView === 'budget' && (
+          {activeView === 'converter' && (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                 <CurrencyConverter toCurrency={toCurrency} onToCurrencyChange={setToCurrency} />
              </div>
