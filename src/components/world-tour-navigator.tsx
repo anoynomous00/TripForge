@@ -57,6 +57,7 @@ import {
   Compass,
   FileText,
   Fingerprint,
+  BookOpenCheck,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -147,6 +148,15 @@ const vehicles = [
   { id: '33-seater', name: '33-Seater Bus', icon: Bus, pricing: { nonAc: { highway: 32, ghat: 35 }, ac: { highway: 36, ghat: 39 }, driver: 800 } },
   { id: 'flight', name: 'Flight', icon: Plane, pricing: null },
 ];
+
+type Booking = {
+    id: string;
+    vehicleName: string;
+    passengerName: string;
+    mobileNumber: string;
+    amount: number | string;
+    currencySymbol: string;
+};
 
 const currencySymbols: { [key: string]: string } = {
   USD: '$',
@@ -328,11 +338,13 @@ function Translator() {
     )
 }
 
-function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | undefined, currencySymbol: string }) {
+function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: string | undefined, currencySymbol: string, onBook: (booking: Omit<Booking, 'id'>) => void }) {
   const [kms, setKms] = React.useState(100);
   const [roadType, setRoadType] = React.useState<'highway' | 'ghat'>('highway');
   const [isAc, setIsAc] = React.useState(false);
   const [totalFare, setTotalFare] = React.useState(0);
+  const [passengerName, setPassengerName] = React.useState('');
+  const [mobileNumber, setMobileNumber] = React.useState('');
 
   const selectedVehicle = React.useMemo(() => {
     return vehicles.find(v => v.id === vehicleId);
@@ -349,6 +361,24 @@ function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | und
     const fare = (kms * rate) + pricing.driver;
     setTotalFare(fare);
   }, [kms, roadType, isAc, selectedVehicle]);
+
+  const handleBookNow = () => {
+    if (!selectedVehicle || !passengerName || !mobileNumber) {
+        // Basic validation
+        alert('Please fill in passenger name and mobile number.');
+        return;
+    }
+    onBook({
+        vehicleName: selectedVehicle.name,
+        passengerName,
+        mobileNumber,
+        amount: totalFare,
+        currencySymbol,
+    });
+    // Clear inputs after booking
+    setPassengerName('');
+    setMobileNumber('');
+  };
   
   if (!selectedVehicle || !selectedVehicle.pricing) {
     return (
@@ -397,8 +427,16 @@ function FareCalculator({ vehicleId, currencySymbol }: { vehicleId: string | und
                 <span className="font-bold text-lg">Estimated Total Fare</span>
                 <span className="font-bold text-2xl text-primary">{currencySymbol}{totalFare.toLocaleString()}</span>
             </div>
+             <div className="space-y-4">
+                <Label>Passenger Details</Label>
+                 <Input placeholder="Passenger Name" value={passengerName} onChange={e => setPassengerName(e.target.value)}/>
+                 <Input placeholder="Mobile Number" type="tel" value={mobileNumber} onChange={e => setMobileNumber(e.target.value)}/>
+            </div>
             <p className='text-xs text-muted-foreground'>This is an estimate. It includes driver charges but excludes tolls, taxes, and other fees.</p>
         </CardContent>
+         <CardFooter>
+            <Button className="w-full" onClick={handleBookNow} disabled={!passengerName || !mobileNumber}>Book Now</Button>
+        </CardFooter>
     </Card>
   )
 }
@@ -816,10 +854,16 @@ function PlaceSuggester() {
     );
   }
 
-function FlightBookingForm() {
+function FlightBookingForm({ onBook }: { onBook: (booking: Omit<Booking, 'id'>) => void }) {
   const [visaPic, setVisaPic] = React.useState<File | null>(null);
   const [preview, setPreview] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const [fromPlace, setFromPlace] = React.useState('');
+  const [toPlace, setToPlace] = React.useState('');
+  const [passengerName, setPassengerName] = React.useState('');
+  const [mobileNumber, setMobileNumber] = React.useState('');
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -833,6 +877,20 @@ function FlightBookingForm() {
     }
   };
 
+  const handleBookFlight = () => {
+    if(!fromPlace || !toPlace || !passengerName || !mobileNumber) {
+        alert('Please fill all required fields.');
+        return;
+    }
+    onBook({
+        vehicleName: `Flight from ${fromPlace} to ${toPlace}`,
+        passengerName,
+        mobileNumber,
+        amount: 'Varies',
+        currencySymbol: '$',
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -843,19 +901,19 @@ function FlightBookingForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
                 <Label htmlFor="from-place">From Place</Label>
-                <Input id="from-place" placeholder="e.g., Bangalore" />
+                <Input id="from-place" placeholder="e.g., Bangalore" value={fromPlace} onChange={e => setFromPlace(e.target.value)} />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="to-place">To Place</Label>
-                <Input id="to-place" placeholder="e.g., New Delhi" />
+                <Input id="to-place" placeholder="e.g., New Delhi" value={toPlace} onChange={e => setToPlace(e.target.value)} />
             </div>
         </div>
         <Separator />
         <div className="space-y-2">
             <Label>Passenger Information</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input placeholder="Full Name" />
-                <Input placeholder="Mobile Number" type="tel" />
+                <Input placeholder="Full Name" value={passengerName} onChange={e => setPassengerName(e.target.value)} />
+                <Input placeholder="Mobile Number" type="tel" value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} />
             </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -893,7 +951,7 @@ function FlightBookingForm() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button>Book Flight (Placeholder)</Button>
+        <Button onClick={handleBookFlight} disabled={!fromPlace || !toPlace || !passengerName || !mobileNumber}>Book Flight</Button>
       </CardFooter>
     </Card>
   )
@@ -907,6 +965,7 @@ export default function WorldTourNavigator() {
   const [toCurrency, setToCurrency] = React.useState('INR');
   const [tripSuggestions, setTripSuggestions] = React.useState<SmartStaySuggestionsOutput | null>(null);
   const [selectedVehicleId, setSelectedVehicleId] = React.useState<string | undefined>();
+  const [bookings, setBookings] = React.useState<Booking[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -918,6 +977,19 @@ export default function WorldTourNavigator() {
       preferences: '',
     },
   });
+
+  const handleNewBooking = (bookingData: Omit<Booking, 'id'>) => {
+    const newBooking = {
+      id: `booking-${Date.now()}`,
+      ...bookingData,
+    };
+    setBookings(prev => [newBooking, ...prev]);
+    toast({
+        title: "Booking Successful!",
+        description: `${newBooking.vehicleName} has been booked for ${newBooking.passengerName}.`
+    });
+    setActiveView('bookings');
+  }
   
   const handleTripDetailsSubmit = async () => {
     setIsSubmitting(true);
@@ -969,6 +1041,7 @@ export default function WorldTourNavigator() {
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
     { id: 'vehicle-selection', label: 'Vehicle Selection', icon: Car },
+    { id: 'bookings', label: 'Bookings', icon: BookOpenCheck },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'offers', label: 'Offers', icon: BadgePercent },
@@ -1273,12 +1346,46 @@ export default function WorldTourNavigator() {
                     </CardContent>
                 </Card>
                 {selectedVehicleId === 'flight' ? (
-                  <FlightBookingForm />
+                  <FlightBookingForm onBook={handleNewBooking}/>
                 ) : (
-                  <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
+                  <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} onBook={handleNewBooking}/>
                 )}
              </div>
           )}
+
+          {activeView === 'bookings' && (
+            <div className="space-y-6">
+                {bookings.length === 0 ? (
+                    <Card>
+                        <CardContent className="text-center text-muted-foreground py-20">
+                            <h3 className="text-lg font-semibold">No Bookings Yet</h3>
+                            <p>Go to "Vehicle Selection" to book your first trip.</p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    bookings.map(booking => (
+                        <Card key={booking.id} className="shadow">
+                            <CardHeader>
+                                <CardTitle className='flex items-center justify-between'>
+                                    <span>{booking.vehicleName}</span>
+                                    <span className="text-primary">{booking.currencySymbol}{booking.amount.toLocaleString()}</span>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center gap-4">
+                                    <User className="w-5 h-5 text-muted-foreground" />
+                                    <span>{booking.passengerName}</span>
+                                </div>
+                                <div className="flex items-center gap-4 mt-2">
+                                    <Phone className="w-5 h-5 text-muted-foreground" />
+                                    <span>{booking.mobileNumber}</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))
+                )}
+            </div>
+           )}
 
           {activeView === 'lodge-booking' && (
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
