@@ -308,6 +308,17 @@ function Translator() {
         setIsLoading(false);
     };
 
+    const languages = [
+        { value: 'English', label: 'English' },
+        { value: 'Spanish', label: 'Spanish' },
+        { value: 'French', label: 'French' },
+        { value: 'Kannada', label: 'Kannada' },
+        { value: 'Hindi', label: 'Hindi' },
+        { value: 'Tamil', label: 'Tamil' },
+        { value: 'Telugu', label: 'Telugu' },
+        { value: 'Malayalam', label: 'Malayalam' },
+    ];
+
     return (
         <Card>
             <CardHeader>
@@ -318,20 +329,18 @@ function Translator() {
                  <Select value={sourceLanguage} onValueChange={setSourceLanguage}>
                     <SelectTrigger><SelectValue placeholder="From Language" /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="English">English</SelectItem>
-                        <SelectItem value="Spanish">Spanish</SelectItem>
-                        <SelectItem value="French">French</SelectItem>
-                        <SelectItem value="Kannada">Kannada</SelectItem>
+                        {languages.map(lang => (
+                            <SelectItem key={`source-${lang.value}`} value={lang.value}>{lang.label}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
                 <Textarea placeholder="Enter text to translate..." value={inputText} onChange={(e) => setInputText(e.target.value)} />
                  <Select value={targetLanguage} onValueChange={setTargetLanguage}>
                     <SelectTrigger><SelectValue placeholder="To Language" /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="English">English</SelectItem>
-                        <SelectItem value="Spanish">Spanish</SelectItem>
-                        <SelectItem value="French">French</SelectItem>
-                        <SelectItem value="Kannada">Kannada</SelectItem>
+                        {languages.map(lang => (
+                            <SelectItem key={`target-${lang.value}`} value={lang.value}>{lang.label}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
                 <Textarea placeholder="Translation..." value={translatedText} readOnly />
