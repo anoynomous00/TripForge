@@ -755,9 +755,9 @@ export default function WorldTourNavigator() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="WorldTour Logo" width={32} height={32} />
-            <h1 className="text-xl font-bold font-headline text-primary-dark">
-              WorldTour
+            <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={32} height={32} />
+            <h1 className="text-xl font-bold font-headline text-primary transition-all duration-300">
+              TRIPFORGE
             </h1>
           </div>
         </SidebarHeader>
@@ -1204,12 +1204,12 @@ export default function WorldTourNavigator() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2"><HelpCircle/> Contact Us</CardTitle>
-                        <CardDescription>If you want any clarity you can contact our agency WorldTour.</CardDescription>
+                        <CardDescription>If you want any clarity you can contact our agency TRIPFORGE.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm">
                         <div className="flex items-center gap-4">
                             <Building className="w-5 h-5 text-muted-foreground" />
-                            <span><span className="font-semibold">Agency:</span> WorldTour Travel Agency</span>
+                            <span><span className="font-semibold">Agency:</span> TRIPFORGE Travel Agency</span>
                         </div>
                         <Separator/>
                         <div className="flex items-center gap-4">
