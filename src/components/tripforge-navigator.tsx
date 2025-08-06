@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import * as React from 'react';
@@ -1033,9 +1034,7 @@ export default function TripforgeNavigator() {
     { id: 'bookings', label: 'Bookings', icon: BookOpenCheck },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
-    { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
-    { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
     { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'help', label: 'Help', icon: HelpCircle },
   ]
@@ -1488,14 +1487,6 @@ export default function TripforgeNavigator() {
                 <CurrencyConverter toCurrency={toCurrency} onToCurrencyChange={setToCurrency} />
              </div>
           )}
-
-          {activeView === 'offers' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                <StudentOfferCard />
-                <HandicapOfferCard />
-                <FamilyOfferCard />
-            </div>
-          )}
           
           {activeView === 'tools' && (
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1510,22 +1501,6 @@ export default function TripforgeNavigator() {
                     </CardContent>
                 </Card>
              </div>
-          )}
-          {activeView === 'safety' && (
-             <div className="space-y-8">
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-                    <FeatureCard icon={Siren} title="SOS / Emergency" description="Quick access to emergency contacts and local services." />
-                    <FeatureCard icon={ShieldCheck} title="Safety Scores" description="AI-powered safety ratings for locations and neighborhoods." />
-                    <FeatureCard icon={Leaf} title="Eco & Over-tourism" description="Find hidden gems and eco-friendly stays to travel responsibly." />
-                </div>
-                 <Alert>
-                    <ShieldCheck className="h-4 w-4" />
-                    <AlertTitle>More Features Coming Soon!</AlertTitle>
-                    <AlertDescription>
-                        We're working on adding verified listings, dietary filters, detailed expense tracking, and more to make your trip planning even better.
-                    </AlertDescription>
-                 </Alert>
-            </div>
           )}
 
           {activeView === 'help' && (
