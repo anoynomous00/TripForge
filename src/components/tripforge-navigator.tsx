@@ -742,14 +742,6 @@ function PlaceSuggester() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {suggestions.map((place, index) => (
               <Card key={index} className="flex flex-col">
-                <Image
-                  src={`https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQ_n2h3t0f1r_7i_pB-L-t7q8h8q3iY2aE2A-w2gY9gH3w1cRz8_n6w1X0`}
-                  data-ai-hint={place.imageHint}
-                  alt={place.name}
-                  width={600}
-                  height={400}
-                  className="w-full h-48 object-cover rounded-t-lg"
-                />
                 <CardHeader>
                   <CardTitle>{place.name}</CardTitle>
                 </CardHeader>
@@ -1564,3 +1556,4 @@ export default function TripforgeNavigator() {
     
 
     
+
