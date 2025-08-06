@@ -7,12 +7,12 @@ import { ArrowRight } from 'lucide-react';
 import WorldTourNavigator from '@/components/world-tour-navigator';
 
 const karnatakaPlaces = [
-  { src: 'https://placehold.co/600x400.png', alt: 'Hampi', hint: 'ancient ruins Hampi' },
-  { src: 'https://placehold.co/600x400.png', alt: 'Mysore Palace', hint: 'Mysore Palace night' },
-  { src: 'https://placehold.co/600x400.png', alt: 'Coorg', hint: 'Coorg coffee plantation' },
-  { src: 'https://placehold.co/600x400.png', alt: 'Gokarna Beach', hint: 'Gokarna beach sunset' },
-  { src: 'https://placehold.co/600x400.png', alt: 'Jog Falls', hint: 'Jog Falls waterfall' },
-  { src: 'https://placehold.co/600x400.png', alt: 'Badami Caves', hint: 'Badami cave temples' },
+  { src: 'https://placehold.co/600x401.png', alt: 'Hampi', hint: 'ancient ruins Hampi' },
+  { src: 'https://placehold.co/600x402.png', alt: 'Mysore Palace', hint: 'Mysore Palace night' },
+  { src: 'https://placehold.co/600x403.png', alt: 'Coorg', hint: 'Coorg coffee plantation' },
+  { src: 'https://placehold.co/600x404.png', alt: 'Gokarna Beach', hint: 'Gokarna beach sunset' },
+  { src: 'https://placehold.co/600x405.png', alt: 'Jog Falls', hint: 'Jog Falls waterfall' },
+  { src: 'https://placehold.co/600x406.png', alt: 'Badami Caves', hint: 'Badami cave temples' },
 ];
 
 function WelcomePage({ onEnter }: { onEnter: () => void }) {
