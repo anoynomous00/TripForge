@@ -811,17 +811,15 @@ function PlaceSuggester() {
     );
   }
 
-function FlightBookingForm() {
+function FlightBookingForm({ from, to }: { from: string; to: string }) {
   const { toast } = useToast();
-  const [fromPlace, setFromPlace] = React.useState('');
-  const [toPlace, setToPlace] = React.useState('');
 
   const handleBookFlight = () => {
-    if (!fromPlace || !toPlace) {
+    if (!from || !to) {
       toast({
         variant: 'destructive',
         title: 'Missing Information',
-        description: 'Please enter both a "From" and "To" location.',
+        description: 'Please enter a "From" and "To" location in your main Trip Details.',
       });
       return;
     }
@@ -834,22 +832,23 @@ function FlightBookingForm() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><Plane /> Book on MakeMyTrip</CardTitle>
-        <CardDescription>Enter your route and we'll redirect you to MakeMyTrip to complete your booking.</CardDescription>
+        <CardDescription>We'll redirect you to MakeMyTrip to complete your booking for the route below.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="from-place">From Place</Label>
-            <Input id="from-place" placeholder="e.g., Bangalore" value={fromPlace} onChange={e => setFromPlace(e.target.value)} />
+          <div className='p-4 border rounded-lg space-y-4'>
+              <div>
+                  <p className='text-sm text-muted-foreground'>From</p>
+                  <p className='font-semibold text-lg'>{from || 'Not set'}</p>
+              </div>
+              <Separator />
+              <div>
+                  <p className='text-sm text-muted-foreground'>To</p>
+                  <p className='font-semibold text-lg'>{to || 'Not set'}</p>
+              </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="to-place">To Place</Label>
-            <Input id="to-place" placeholder="e.g., New Delhi" value={toPlace} onChange={e => setToPlace(e.target.value)} />
-          </div>
-        </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleBookFlight} disabled={!fromPlace || !toPlace} className="w-full">
+        <Button onClick={handleBookFlight} disabled={!from || !to} className="w-full">
             Search Flights on MakeMyTrip <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardFooter>
@@ -1438,7 +1437,7 @@ export default function TripforgeNavigator() {
                     </CardContent>
                 </Card>
                 {activeVehicleTab === 'flight' ? (
-                  <FlightBookingForm />
+                  <FlightBookingForm from={currentLocation} to={destination} />
                 ) : (
                   <ZoomcarBookingCard vehicleId={selectedVehicleId} />
                 )}
