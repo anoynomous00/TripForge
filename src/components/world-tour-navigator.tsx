@@ -1128,7 +1128,7 @@ export default function WorldTourNavigator() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2"><HelpCircle/> Contact Us</CardTitle>
-                        <CardDescription>Get in touch with us for any queries or support.</CardDescription>
+                        <CardDescription>If you want any clarity you can contact our agency WorldTour.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm">
                         <div className="flex items-center gap-4">
