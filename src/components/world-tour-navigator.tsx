@@ -521,6 +521,57 @@ function HandicapOfferCard() {
   );
 }
 
+function FamilyOfferCard() {
+    const [names, setNames] = React.useState('');
+    const [contact, setContact] = React.useState('');
+    const [place, setPlace] = React.useState('');
+  
+    const canClaim = names.trim() !== '' && contact.trim() !== '' && place.trim() !== '';
+  
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Users /> Family/Group Offer</CardTitle>
+          <CardDescription>Get 10% off for groups of 5 or more members.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="family-names">Names of All Members</Label>
+            <Textarea
+              id="family-names"
+              placeholder="e.g., John Doe, Jane Doe,..."
+              value={names}
+              onChange={(e) => setNames(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="contact-no">Contact Number</Label>
+              <Input
+                id="contact-no"
+                placeholder="Enter a contact number"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="family-place">Your City/Place</Label>
+              <Input
+                id="family-place"
+                placeholder="Enter your city"
+                value={place}
+                onChange={(e) => setPlace(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button disabled={!canClaim}>Claim 10% Off</Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
 
 export default function WorldTourNavigator() {
   const { toast } = useToast();
@@ -1095,9 +1146,10 @@ export default function WorldTourNavigator() {
           )}
 
           {activeView === 'offers' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <StudentOfferCard />
                 <HandicapOfferCard />
+                <FamilyOfferCard />
             </div>
           )}
           
@@ -1136,5 +1188,3 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
-
-    
