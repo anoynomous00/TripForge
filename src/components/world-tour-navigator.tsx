@@ -760,7 +760,7 @@ export default function WorldTourNavigator() {
                 background: 'linear-gradient(to right, #8a2be2, #ff4500, #ffd700)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 2px #000'
+                textShadow: '1px 1px 0 #4B0082, -1px -1px 0 #4B0082, 1px -1px 0 #4B0082, -1px 1px 0 #4B0082, 1px 1px 2px #4B0082'
             }}>
               TRIPFORGE
             </h1>
@@ -1189,3 +1189,5 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
+
+    
