@@ -619,9 +619,10 @@ export default function WorldTourNavigator() {
                                                 "flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer aspect-square transition-all duration-200",
                                                 field.value === vehicle.id && "border-primary ring-2 ring-primary"
                                                 )}>
-                                                <Image src={vehicle.image} alt={vehicle.name} width={120} height={90} className='rounded-md object-cover flex-grow w-full' data-ai-hint={vehicle.hint}/>
+                                                <div className="flex-grow flex items-center justify-center">
+                                                  <vehicle.icon className="w-16 h-16 text-primary" />
+                                                </div>
                                                 <span className="font-bold mt-2 text-center">{vehicle.name}</span>
-                                                <vehicle.icon className="w-5 h-5 text-muted-foreground mt-1"/>
                                                 </FormLabel>
                                             </FormItem>
                                             ))}
