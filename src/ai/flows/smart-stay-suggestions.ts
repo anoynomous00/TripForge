@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const SmartStaySuggestionsInputSchema = z.object({
   destination: z.string().describe('The final destination of the trip.'),
@@ -23,14 +23,17 @@ const SmartStaySuggestionsInputSchema = z.object({
 export type SmartStaySuggestionsInput = z.infer<typeof SmartStaySuggestionsInputSchema>;
 
 const SmartStaySuggestionsOutputSchema = z.object({
-  suggestedStops: z.array(
-    z.object({
-      location: z.string().describe('The city or town where the overnight stay is recommended.'),
-      estimatedArrivalTime: z.string().describe('The estimated time of arrival (YYYY-MM-DD HH:mm).'),
-      reason: z.string().describe('Explanation of why this location is a good choice based on the inputs. Mention if it\'s a hidden gem or eco-friendly if applicable.'),
-    })
-  ).describe('An array of suggested overnight stay locations and arrival times along the route.'),
-  routeCities: z.array(z.string()).describe('An array of major cities or towns the vehicle will pass through from the current location to the destination.'),
+  suggestedRoutes: z.array(z.object({
+    routeName: z.string().describe('A descriptive name for the route (e.g., "The Coastal Route", "The Mountain Pass").'),
+    routeCities: z.array(z.string()).describe('An array of major cities or towns the vehicle will pass through sequentially from the current location to the destination for this route.'),
+    suggestedStops: z.array(
+      z.object({
+        location: z.string().describe('The city or town where the overnight stay is recommended.'),
+        estimatedArrivalTime: z.string().describe('The estimated time of arrival (YYYY-MM-DD HH:mm).'),
+        reason: z.string().describe('Explanation of why this location is a good choice. Mention any special hotels, temples, or points of interest. Mention if it\'s a hidden gem or eco-friendly if applicable.'),
+      })
+    ).describe('An array of suggested overnight stay locations and arrival times along this specific route.'),
+  })).describe('An array of different suggested routes from the current location to the destination.')
 });
 export type SmartStaySuggestionsOutput = z.infer<typeof SmartStaySuggestionsOutputSchema>;
 
@@ -42,11 +45,12 @@ const prompt = ai.definePrompt({
   name: 'smartStaySuggestionsPrompt',
   input: {schema: SmartStaySuggestionsInputSchema},
   output: {schema: SmartStaySuggestionsOutputSchema},
-  prompt: `You are a trip planning expert specializing in suggesting optimal overnight stay locations and listing the route.
+  prompt: `You are a trip planning expert specializing in suggesting multiple alternative routes and optimal overnight stay locations.
 
   Given the following information about a trip, do two things:
-  1. Suggest one or more locations for overnight stays along the route. Prioritize "hidden gems" and "eco-friendly" options if mentioned in the preferences. Consider the traveler's other preferences, budget, and group size when making your recommendations. Estimate arrival times assuming dailyTravelDistance miles of travel from the tripStartDate.
-  2. List the major cities and towns the vehicle will pass through sequentially from the current location to the destination.
+  1. Suggest 2-3 different routes from the current location to the destination. For each route, provide a descriptive name (e.g., "The Scenic Route", "The Direct Path").
+  2. For each route, list the major cities and towns the vehicle will pass through sequentially.
+  3. For each route, suggest one or more locations for overnight stays. For each stop, provide a reason. In the reason, you MUST mention specific points of interest like special hotels or famous temples in or near that city. Prioritize "hidden gems" and "eco-friendly" options if mentioned in the preferences. Consider the traveler's other preferences, budget, and group size. Estimate arrival times assuming dailyTravelDistance miles of travel from the tripStartDate.
 
   Destination: {{{destination}}}
   Number of Travelers: {{{travelers}}}
@@ -56,7 +60,7 @@ const prompt = ai.definePrompt({
   Trip Start Date: {{{tripStartDate}}}
   Daily Travel Distance: {{{dailyTravelDistance}}} miles
 
-  Format your response as a JSON object with a "suggestedStops" array and a "routeCities" array. Each object in the "suggestedStops" array should include the "location", "estimatedArrivalTime", and "reason" for the suggestion. The "routeCities" array should be a list of strings. Adhere to the SmartStaySuggestionsOutputSchema Zod descriptions.`, 
+  Format your response as a JSON object with a "suggestedRoutes" array. Each object in the array should represent a different route and contain "routeName", "routeCities", and "suggestedStops". Adhere to the SmartStaySuggestionsOutputSchema Zod descriptions.`, 
 });
 
 const smartStaySuggestionsFlow = ai.defineFlow(

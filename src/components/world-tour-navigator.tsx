@@ -47,6 +47,7 @@ import {
   User,
   Building,
   Mail,
+  Hotel,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -100,6 +101,7 @@ import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestio
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -700,7 +702,7 @@ export default function WorldTourNavigator() {
     const result = await generateSuggestions(input);
     if (result.success && result.data) {
       setTripSuggestions(result.data);
-      setActiveView('traveler-preferences');
+      // We stay on the same page to show results
     } else {
       toast({
         variant: 'destructive',
@@ -733,7 +735,6 @@ export default function WorldTourNavigator() {
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
-    { id: 'traveler-preferences', label: 'Traveler Preferences', icon: Users },
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
@@ -790,28 +791,22 @@ export default function WorldTourNavigator() {
             </h2>
           </div>
 
-          {(activeView === 'trip-details' || activeView === 'traveler-preferences') && (
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-                <div>
+          {activeView === 'trip-details' && (
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 items-start'>
+                <div className='space-y-8'>
                      <Card className="shadow-lg">
                         <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2 text-2xl">
-                           {activeView === 'trip-details' ? <Waypoints/> : <Users />}
-                           {activeView === 'trip-details' ? "Your Adventure Details" : "Traveler Preferences"}
+                           <Waypoints/> Your Adventure Details
                         </CardTitle>
                         <CardDescription>
-                            {activeView === 'trip-details' 
-                                ? "Fill in the details below to get started." 
-                                : "Tell us about your group and preferences."}
+                            Fill in the details below to get route suggestions.
                         </CardDescription>
                         </CardHeader>
                         <CardContent>
                         <Form {...form}>
-                            <form onSubmit={(e) => { e.preventDefault(); activeView === 'trip-details' ? handleTripDetailsSubmit() : setActiveView('vehicle'); }} className="space-y-6">
-                            
-                            {activeView === 'trip-details' && (
+                            <form onSubmit={(e) => { e.preventDefault(); handleTripDetailsSubmit(); }} className="space-y-6">
                                 <div className='space-y-4'>
-                                    <h3 className='font-semibold flex items-center gap-2'><MapPin /> Trip Details</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                         control={form.control}
@@ -879,13 +874,7 @@ export default function WorldTourNavigator() {
                                         </FormItem>
                                     )}
                                     />
-                                </div>
-                            )}
-
-                            {activeView === 'traveler-preferences' && (
-                                <div className='space-y-4'>
-                                    <h3 className='font-semibold flex items-center gap-2'><Users /> Preferences</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                         control={form.control}
                                         name="travelers"
@@ -949,57 +938,90 @@ export default function WorldTourNavigator() {
                                     )}
                                     />
                                 </div>
-                            )}
-
-                            <div className='flex justify-end !mt-8'>
+                            
+                            <div className='flex justify-between items-center !mt-8'>
                                 <Button type="submit" size="lg" disabled={isSubmitting}>
-                                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Getting Route...</> : (
+                                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Getting Suggestions...</> : (
                                     <>
-                                     {activeView === 'trip-details' ? 'Next: Preferences' : 'Next: Choose Vehicle'}
-                                     <ChevronRight className="ml-2 h-4 w-4" />
+                                     <Sparkles className="mr-2 h-4 w-4" /> Get Route Suggestions
                                     </>
                                     )}
                                 </Button>
+                                 <Button variant="outline" onClick={() => setActiveView('vehicle')} disabled={!form.formState.isValid}>
+                                    Next: Choose Vehicle <ChevronRight className="ml-2 h-4 w-4" />
+                                 </Button>
                             </div>
                             </form>
                         </Form>
                         </CardContent>
                     </Card>
-                     { (tripSuggestions || isSubmitting) && activeView === 'trip-details' && (
-                        <Card className="mt-8 shadow-lg">
+                </div>
+                <div className="space-y-8">
+                     <Card className="shadow-lg">
                            <CardHeader>
-                               <CardTitle className="font-headline flex items-center gap-2 text-2xl"><Waypoints/> Suggested Route</CardTitle>
-                               <CardDescription>Major cities and towns you'll pass through on your way to {form.getValues().destination}.</CardDescription>
+                               <CardTitle className="font-headline flex items-center gap-2 text-2xl"><Map/> Suggested Routes</CardTitle>
+                               <CardDescription>Our AI has crafted these routes just for you. Select one to see details.</CardDescription>
                            </CardHeader>
                             <CardContent>
                                 {isSubmitting ? (
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-4 w-3/4" />
-                                        <Skeleton className="h-4 w-1/2" />
-                                        <Skeleton className="h-4 w-2/3" />
+                                    <div className="space-y-4">
+                                        <div className='flex items-center gap-4'>
+                                            <Skeleton className='h-12 w-12 rounded-full'/>
+                                            <div className='space-y-2'>
+                                                <Skeleton className="h-4 w-48" />
+                                                <Skeleton className="h-4 w-32" />
+                                            </div>
+                                        </div>
+                                         <div className='flex items-center gap-4'>
+                                            <Skeleton className='h-12 w-12 rounded-full'/>
+                                            <div className='space-y-2'>
+                                                <Skeleton className="h-4 w-48" />
+                                                <Skeleton className="h-4 w-32" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : !tripSuggestions ? (
+                                    <div className='text-center text-muted-foreground py-10'>
+                                        <p>Fill out the form and click "Get Route Suggestions" to see your personalized travel plans here.</p>
                                     </div>
                                 ) : (
-                                    <div className="flex flex-wrap gap-x-4 gap-y-2 items-center">
-                                       {tripSuggestions?.routeCities.map((city, index) => (
-                                         <React.Fragment key={city}>
-                                           <div className="font-medium">{city}</div>
-                                           {index < tripSuggestions.routeCities.length - 1 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
-                                         </React.Fragment>
-                                       ))}
-                                    </div>
+                                    <Accordion type="single" collapsible className="w-full">
+                                        {tripSuggestions?.suggestedRoutes.map((route, rIndex) => (
+                                            <AccordionItem key={rIndex} value={`item-${rIndex}`}>
+                                                <AccordionTrigger className='text-lg font-semibold hover:no-underline'>
+                                                    {route.routeName}
+                                                </AccordionTrigger>
+                                                <AccordionContent className='space-y-6 pt-4'>
+                                                     <div>
+                                                        <h4 className='font-semibold mb-2'>Path:</h4>
+                                                        <div className="flex flex-wrap gap-x-2 gap-y-2 items-center text-sm">
+                                                        {route.routeCities.map((city, cIndex) => (
+                                                            <React.Fragment key={city}>
+                                                                <div className="font-medium bg-muted px-2 py-1 rounded">{city}</div>
+                                                                {cIndex < route.routeCities.length - 1 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                                                            </React.Fragment>
+                                                        ))}
+                                                        </div>
+                                                     </div>
+                                                     <div>
+                                                         <h4 className='font-semibold mb-2'>Suggested Overnight Stops:</h4>
+                                                         <div className='space-y-4'>
+                                                            {route.suggestedStops.map((stop, sIndex) => (
+                                                                <div key={sIndex} className='p-3 border rounded-lg bg-background'>
+                                                                    <p className='font-bold flex items-center gap-2'><Hotel className='text-primary'/> {stop.location}</p>
+                                                                    <p className='text-sm text-muted-foreground pl-7'><span className='font-medium'>Arrival:</span> {format(new Date(stop.estimatedArrivalTime), 'PPp')}</p>
+                                                                    <p className='text-sm mt-2 pl-7'>{stop.reason}</p>
+                                                                </div>
+                                                            ))}
+                                                         </div>
+                                                     </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        ))}
+                                    </Accordion>
                                 )}
                             </CardContent>
                         </Card>
-                    )}
-                </div>
-                <div className="space-y-8">
-                     <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
-                        <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="A stylized illustration of a map and a car" className="mb-6 rounded-lg" data-ai-hint="travel planning journey"/>
-                        <h2 className="text-2xl font-bold font-headline text-primary-dark">Ready for an adventure?</h2>
-                        <p className="text-muted-foreground mt-2 max-w-md">
-                            Your personalized trip itinerary will appear in the 'Route & Stays' section. Just fill out the form to discover optimized routes, smart stay suggestions, and more!
-                        </p>
-                    </Card>
                 </div>
             </div>
           )}
@@ -1053,12 +1075,12 @@ export default function WorldTourNavigator() {
                                     )}
                                 />
                                 <div className="flex justify-between items-center !mt-8">
-                                    <Button variant="outline" onClick={() => setActiveView('traveler-preferences')}>Back</Button>
+                                    <Button variant="outline" onClick={() => setActiveView('trip-details')}>Back</Button>
                                     <Button type="submit" size="lg" disabled={isSubmitting || !selectedVehicleId}>
                                         {isSubmitting ? (
                                             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</>
                                         ) : (
-                                            <><Sparkles className="mr-2 h-4 w-4" /> Generate Smart Trip</>
+                                            <>Confirm & Go to Lodge Booking <ChevronRight className="ml-2 h-4 w-4" /></>
                                         )}
                                     </Button>
                                 </div>
@@ -1232,5 +1254,3 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
-
-    
