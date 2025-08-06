@@ -67,14 +67,6 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
 export default function Home() {
   const [showWelcome, setShowWelcome] = React.useState(true);
   
-  React.useEffect(() => {
-    if (showWelcome) {
-      document.documentElement.classList.add('hide-global-background');
-    } else {
-      document.documentElement.classList.remove('hide-global-background');
-    }
-  }, [showWelcome]);
-
   if (showWelcome) {
     return <WelcomePage onEnter={() => setShowWelcome(false)} />;
   }

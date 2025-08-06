@@ -82,25 +82,4 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-image: url('https://wallpapers.com/images/featured-full/world-map-desktop-377awf240ap812jp.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: blur(4px);
-    -webkit-filter: blur(4px);
-    transform: scale(1.1);
-  }
-
-  .hide-global-background body::before {
-    display: none;
-  }
 }
