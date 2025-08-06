@@ -18,6 +18,18 @@ const karnatakaPlaces = [
 function WelcomePage({ onEnter }: { onEnter: () => void }) {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen bg-black text-white overflow-hidden">
+      <div className="absolute top-4 right-6 z-20">
+        <p 
+          className="font-headline text-2xl font-bold lowercase"
+          style={{
+            backgroundImage: 'linear-gradient(to right, #f85032, #e73827, #e73827, #f85032, #f5c62d, #f85032)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          dvg travels
+        </p>
+      </div>
       <div className="absolute inset-0 z-0">
         <div className="grid grid-cols-3 grid-rows-2 h-full w-full">
           {karnatakaPlaces.map((place, index) => (
