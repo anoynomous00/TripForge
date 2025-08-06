@@ -128,7 +128,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const CustomBikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" {...props}>
-      <path d="M499.5 224.2c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L358.9 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9l-19.5 33.8c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2L244 290.8c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4 1.8-3.6 2.9-6 2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#a6a6a6"/>
+      <path d="M499.5 224.2c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L358.9 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9l-19.5 33.8c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2L244 290.8c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#a6a6a6"/>
       <path d="M246.5 288.7l-4.5-8.6c-1.2-3-4.1-5.2-7.3-5.2h-24.8c-2.8 0-5.4-1.5-6.8-3.9L183.4 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9L108.4 275c-1.4 2.4-4 3.9-6.8 3.9H76.8c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9H224c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c.6-1.5.6-3.2 0-4.7z" fill="#d9d9d9"/>
       <path d="M243.6 169.8c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L102.9 192c-1.4-2.4-4-3.9-6.8-3.9H54.2c-2.8 0-5.4 1.5-6.8 3.9L27.9 227.3c-1.4 2.4-4 3.9-6.8 3.9H-3.7c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#404040"/>
       <path d="M375.9 313.1c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L235.3 330c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9L160.1 365c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#c1c1c1"/>
@@ -376,6 +376,9 @@ function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: stri
         amount: totalFare,
         currencySymbol,
     });
+    // Redirect after adding to internal list
+    window.open('https://www.makemytrip.com/cabs/', '_blank');
+
     // Clear inputs after booking
     setPassengerName('');
     setMobileNumber('');
@@ -436,7 +439,7 @@ function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: stri
             <p className='text-xs text-muted-foreground'>This is an estimate. It includes driver charges but excludes tolls, taxes, and other fees.</p>
         </CardContent>
          <CardFooter>
-            <Button className="w-full" onClick={handleBookNow} disabled={!passengerName || !mobileNumber}>Book Now</Button>
+            <Button className="w-full" onClick={handleBookNow} disabled={!passengerName || !mobileNumber}>Book Now & Redirect</Button>
         </CardFooter>
     </Card>
   )
@@ -654,6 +657,10 @@ function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
   const pricePerNight = lodgingPrices[roomType][sharing];
   const totalCost = pricePerNight * nights * rooms;
 
+  const handleBookLodge = () => {
+    window.open('https://www.makemytrip.com/hotels/', '_blank');
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -712,7 +719,7 @@ function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Book Lodge (Placeholder)</Button>
+        <Button className="w-full" onClick={handleBookLodge}>Book Lodge & Redirect</Button>
       </CardFooter>
     </Card>
   );
@@ -890,6 +897,8 @@ function FlightBookingForm({ onBook }: { onBook: (booking: Omit<Booking, 'id'>) 
         amount: 'Varies',
         currencySymbol: '$',
     });
+    // Redirect after adding to internal list
+    window.open('https://www.makemytrip.com/flights/', '_blank');
   }
 
   return (
@@ -952,7 +961,7 @@ function FlightBookingForm({ onBook }: { onBook: (booking: Omit<Booking, 'id'>) 
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleBookFlight} disabled={!fromPlace || !toPlace || !passengerName || !mobileNumber}>Book Flight</Button>
+        <Button onClick={handleBookFlight} disabled={!fromPlace || !toPlace || !passengerName || !mobileNumber}>Book Flight & Redirect</Button>
       </CardFooter>
     </Card>
   )
@@ -987,10 +996,10 @@ export default function TripforgeNavigator() {
     };
     setBookings(prev => [newBooking, ...prev]);
     toast({
-        title: "Booking Successful!",
-        description: `${newBooking.vehicleName} has been booked for ${newBooking.passengerName}.`
+        title: "Booking Saved!",
+        description: `${newBooking.vehicleName} for ${newBooking.passengerName} has been added to your local list. You will be redirected to complete the booking.`
     });
-    setActiveView('bookings');
+    // No longer switching view, just showing a toast
   }
   
   const handleTripDetailsSubmit = async () => {
