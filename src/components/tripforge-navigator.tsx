@@ -376,9 +376,7 @@ function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: stri
         amount: totalFare,
         currencySymbol,
     });
-    // Redirect after adding to internal list
-    window.open('https://www.makemytrip.com/cabs/', '_blank');
-
+    
     // Clear inputs after booking
     setPassengerName('');
     setMobileNumber('');
@@ -441,7 +439,7 @@ function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: stri
             <p className='text-xs text-muted-foreground'>This is an estimate. It includes driver charges but excludes tolls, taxes, and other fees.</p>
         </CardContent>
          <CardFooter>
-            <Button className="w-full" onClick={handleBookNow} disabled={!passengerName || !mobileNumber}>Book Now & Redirect</Button>
+            <Button className="w-full" onClick={handleBookNow} disabled={!passengerName || !mobileNumber}>Book Now</Button>
         </CardFooter>
     </Card>
   )
@@ -660,7 +658,9 @@ function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
   const totalCost = pricePerNight * nights * rooms;
 
   const handleBookLodge = () => {
-    window.open('https://www.makemytrip.com/hotels/', '_blank');
+    // This function can be extended to save the booking locally
+    // For now, it just shows a placeholder alert.
+    alert(`Booking ${rooms} ${roomType} room(s) for ${nights} night(s). Total: ${currencySymbol}${totalCost}`);
   };
 
   return (
@@ -723,7 +723,7 @@ function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" onClick={handleBookLodge}>Book Lodge & Redirect</Button>
+        <Button className="w-full" onClick={handleBookLodge}>Book Lodge</Button>
       </CardFooter>
     </Card>
   );
@@ -1001,9 +1001,9 @@ export default function TripforgeNavigator() {
     setBookings(prev => [newBooking, ...prev]);
     toast({
         title: "Booking Saved!",
-        description: `${newBooking.vehicleName} for ${newBooking.passengerName} has been added to your local list. You will be redirected to complete the booking.`
+        description: `${newBooking.vehicleName} for ${newBooking.passengerName} has been added to your local list.`
     });
-    // No longer switching view, just showing a toast
+    setActiveView('bookings');
   }
   
   const handleTripDetailsSubmit = async () => {
