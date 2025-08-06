@@ -25,9 +25,8 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
               <Image
                 src={place.src}
                 alt={place.alt}
-                layout="fill"
-                objectFit="cover"
-                className="opacity-40 transition-transform duration-500 ease-in-out group-hover:scale-105"
+                fill
+                className="object-cover opacity-40 transition-transform duration-500 ease-in-out group-hover:scale-105"
                 data-ai-hint={place.hint}
               />
             </div>
