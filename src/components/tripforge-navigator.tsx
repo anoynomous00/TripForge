@@ -578,101 +578,52 @@ function FamilyOfferCard() {
     );
   }
 
-const lodgingPrices = {
-  ac: {
-    '2': 2500,
-    '3': 3500,
-    '4': 4500,
-  },
-  nonAc: {
-    '2': 1500,
-    '3': 2500,
-    '4': 3500,
-  },
-};
+function LodgeBookingCard({ tripSuggestions }: { tripSuggestions: SmartStaySuggestionsOutput | null }) {
+    
+    const allStops = tripSuggestions?.suggestedRoutes.flatMap(route => route.suggestedStops) || [];
+    // Remove duplicate locations
+    const uniqueStops = allStops.filter((stop, index, self) => 
+        index === self.findIndex((s) => s.location === stop.location)
+    );
 
-type RoomType = 'ac' | 'nonAc';
-type SharingType = '2' | '3' | '4';
+    const handleSearchTrivago = (location: string) => {
+        window.open(`https://www.trivago.com/en-US/srl/hotels?query=${encodeURIComponent(location)}`, '_blank');
+    };
 
-function LodgeBookingCard({ currencySymbol }: { currencySymbol: string }) {
-  const [roomType, setRoomType] = React.useState<RoomType>('nonAc');
-  const [sharing, setSharing] = React.useState<SharingType>('2');
-  const [nights, setNights] = React.useState(1);
-  const [rooms, setRooms] = React.useState(1);
-
-  const pricePerNight = lodgingPrices[roomType][sharing];
-  const totalCost = pricePerNight * nights * rooms;
-
-  const handleBookLodge = () => {
-    // This function can be extended to save the booking locally
-    // For now, it just shows a placeholder alert.
-    alert(`Booking ${rooms} ${roomType} room(s) for ${nights} night(s). Total: ${currencySymbol}${totalCost}`);
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"><BedDouble /> Lodge Booking</CardTitle>
-        <CardDescription>Configure your stay and estimate the cost.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Room Type</Label>
-            <RadioGroup value={roomType} onValueChange={(val: RoomType) => setRoomType(val)} className="flex gap-4 pt-1">
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <RadioGroupItem value="nonAc" /> Non-AC
-              </Label>
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <RadioGroupItem value="ac" /> AC
-              </Label>
-            </RadioGroup>
-          </div>
-          <div className="space-y-2">
-            <Label>Sharing Capacity</Label>
-            <RadioGroup value={sharing} onValueChange={(val: SharingType) => setSharing(val)} className="grid grid-cols-3 gap-4 pt-1">
-              {['2', '3', '4'].map(num => (
-                <Label
-                  key={num}
-                  className={cn(
-                    'flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all',
-                    sharing === num && 'border-primary ring-2 ring-primary'
-                  )}
-                >
-                  <Users className="w-8 h-8 mb-1" />
-                  <span className="font-bold">{num} Sharing</span>
-                  <span className="text-xs text-muted-foreground">{currencySymbol}{lodgingPrices[roomType][num as SharingType]}/night</span>
-                </Label>
-              ))}
-            </RadioGroup>
-          </div>
-        </div>
-
-        <Separator />
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="nights">Number of Nights</Label>
-            <Input id="nights" type="number" value={nights} onChange={e => setNights(Math.max(1, Number(e.target.value)))} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="rooms">Number of Rooms</Label>
-            <Input id="rooms" type="number" value={rooms} onChange={e => setRooms(Math.max(1, Number(e.target.value)))} />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
-          <span className="font-bold text-lg">Total Lodging Cost</span>
-          <span className="text-2xl text-primary">
-            <span className='font-normal'>{currencySymbol}</span><span className='font-bold'>{totalCost.toLocaleString()}</span>
-          </span>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={handleBookLodge}>Book Lodge</Button>
-      </CardFooter>
-    </Card>
-  );
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><BedDouble /> Hotel Suggestions</CardTitle>
+                <CardDescription>Find hotels at your suggested overnight stops on Trivago.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {uniqueStops.length === 0 ? (
+                    <div className="text-center text-muted-foreground p-8">
+                        <p>Fill out your trip details to get personalized hotel suggestions for your route.</p>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {uniqueStops.map((stop, index) => (
+                            <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                                <div>
+                                    <p className="font-semibold text-lg flex items-center gap-2">
+                                        <MapPin className="text-primary w-5 h-5"/> {stop.location}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground pl-7">{stop.reason}</p>
+                                </div>
+                                <Button onClick={() => handleSearchTrivago(stop.location)}>
+                                    Search on Trivago <ArrowRight className="ml-2 h-4 w-4"/>
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </CardContent>
+             <CardFooter>
+                <p className='text-xs text-muted-foreground'>You will be redirected to Trivago.com to view hotel listings.</p>
+            </CardFooter>
+        </Card>
+    );
 }
 
 const seasons = [
@@ -1499,8 +1450,8 @@ export default function TripforgeNavigator() {
            )}
 
           {activeView === 'lodge-booking' && (
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-                <LodgeBookingCard currencySymbol={currencySymbol} />
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <LodgeBookingCard tripSuggestions={tripSuggestions} />
                 <Card>
                     <CardHeader>
                         <CardTitle>Why Book With Us?</CardTitle>
@@ -1509,22 +1460,22 @@ export default function TripforgeNavigator() {
                         <div className='flex items-start gap-4'>
                             <ShieldCheck className='w-8 h-8 text-primary mt-1'/>
                             <div>
-                                <h3 className='font-semibold'>Verified Stays</h3>
-                                <p className='text-muted-foreground'>Every property is hand-picked and verified by our team for quality and safety.</p>
+                                <h3 className='font-semibold'>Verified Partners</h3>
+                                <p className='text-muted-foreground'>We partner with trusted sites like Trivago to bring you verified, quality stays.</p>
                             </div>
                         </div>
                         <div className='flex items-start gap-4'>
                             <TrendingUp className='w-8 h-8 text-primary mt-1'/>
                             <div>
                                 <h3 className='font-semibold'>Best Price Guarantee</h3>
-                                <p className='text-muted-foreground'>We ensure you get the best possible rates for your chosen accommodation.</p>
+                                <p className='text-muted-foreground'>Trivago compares prices from hundreds of websites to ensure you get the best deal.</p>
                             </div>
                         </div>
                          <div className='flex items-start gap-4'>
                             <HelpCircle className='w-8 h-8 text-primary mt-1'/>
                             <div>
                                 <h3 className='font-semibold'>24/7 Support</h3>
-                                <p className='text-muted-foreground'>Our support team is always available to assist you with any booking-related queries.</p>
+                                <p className='text-muted-foreground'>Our support team is always available to assist you with any trip planning queries.</p>
                             </div>
                         </div>
                     </CardContent>
@@ -1632,6 +1583,8 @@ export default function TripforgeNavigator() {
     </div>
   );
 }
+
+    
 
     
 
