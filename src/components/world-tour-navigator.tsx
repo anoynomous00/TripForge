@@ -758,7 +758,7 @@ export default function WorldTourNavigator() {
           <div className="flex items-center gap-3 p-2">
             <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
             <h1 className="text-2xl font-bold font-headline uppercase" style={{
-                background: 'linear-gradient(to right, #ef4444, #f97316, #eab308)',
+                background: 'linear-gradient(to right, #4f46e5, #7c3aed, #db2777, #f59e0b)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 2px #000'
@@ -1145,7 +1145,7 @@ export default function WorldTourNavigator() {
                     <CardContent className="space-y-4 text-sm">
                         <div className="flex items-center gap-4">
                             <Building className="w-5 h-5 text-muted-foreground" />
-                            <span><span className="font-semibold">Agency:</span> TRIPFORGE Travel Agency</span>
+                            <span><span className="font-semibold">Agency:</span> TRIPFORGE</span>
                         </div>
                         <Separator/>
                         <div className="flex items-center gap-4">
