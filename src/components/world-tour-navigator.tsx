@@ -674,6 +674,7 @@ export default function WorldTourNavigator() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [toCurrency, setToCurrency] = React.useState('INR');
   const [tripSuggestions, setTripSuggestions] = React.useState<SmartStaySuggestionsOutput | null>(null);
+  const [selectedVehicleId, setSelectedVehicleId] = React.useState<string | undefined>();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -1062,35 +1063,26 @@ export default function WorldTourNavigator() {
           )}
 
           {activeView === 'budget' && (
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><BadgePercent/> Expense Estimator</CardTitle>
-                        <CardDescription>An estimated breakdown of your trip costs.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                         <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-                            <span className="font-medium">Tolls</span>
-                            <span className="font-bold text-lg">{currencySymbol}2,800</span>
-                        </div>
-                         <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-                            <span className="font-medium">Lodging (3 nights)</span>
-                            <span className="font-bold text-lg">{currencySymbol}15,000</span>
-                        </div>
-                         <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-                            <span className="font-medium">Food & Activities</span>
-                            <span className="font-bold text-lg">{currencySymbol}20,000</span>
-                        </div>
-                        <Separator />
-                         <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary">
-                            <span className="font-bold text-lg">Total Estimated Cost</span>
-                            <span className="font-bold text-2xl text-primary">{currencySymbol}37,800</span>
-                        </div>
-                    </CardContent>
-                     <CardFooter>
-                        <p className='text-xs text-muted-foreground'>Vehicle rental costs are not included in this estimate. Use the Fare Calculator for vehicle costs.</p>
-                    </CardFooter>
-                </Card>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                <div className='lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8'>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className='flex items-center gap-2'><Car/> Select Vehicle</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='space-y-2'>
+                                {vehicles.map(v => (
+                                    <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
+                                        <RadioGroupItem value={v.id} />
+                                        <v.icon className='w-6 h-6 text-muted-foreground'/>
+                                        <span>{v.name}</span>
+                                    </Label>
+                                ))}
+                            </RadioGroup>
+                        </CardContent>
+                    </Card>
+                    <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
+                </div>
                 <CurrencyConverter toCurrency={toCurrency} onToCurrencyChange={setToCurrency} />
              </div>
           )}
@@ -1189,5 +1181,3 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
-
-    
