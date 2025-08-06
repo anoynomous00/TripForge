@@ -114,8 +114,21 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const CustomBikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      {...props}
+    >
+      <path d="M19.48,8.21l-2.84-2.84C16.14,4.88,15.53,4.5,14.86,4.5H11.5c-1.3,0-2.5,0.78-3.08,2L4.6,12.55 c-0.27,0.56-0.42,1.17-0.42,1.8V17c0,1.1,0.9,2,2,2h1c0.55,0,1-0.45,1-1v-1c0-0.55-0.45-1-1-1H7v-1.5 c0-0.07,0.01-0.14,0.02-0.21l1.9-4.24C9.1,11.39,9.55,11,10.15,11h3.35c0.3,0,0.59,0.1,0.82,0.28l4.47,3.58 c0.3,0.24,0.71,0.29,1.07,0.13c0.41-0.19,0.69-0.59,0.69-1.04V9C20,8.7,19.8,8.42,19.48,8.21z" />
+      <circle cx="7.5" cy="17.5" r="2.5" />
+      <circle cx="17.5" cy="17.5" r="2.5" />
+    </svg>
+  );
+
 const vehicles = [
-  { id: 'bike', name: 'Bike', icon: Bike, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
+  { id: 'bike', name: 'Bike', icon: CustomBikeIcon, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
   { id: 'scooty', name: 'Scooty', icon: Bike, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
   { id: 'swift', name: 'Swift', icon: Car, pricing: { nonAc: { highway: 10, ghat: 11 }, ac: { highway: 12, ghat: 13 }, driver: 500 } },
   { id: 'etios', name: 'Etios', icon: Car, pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
@@ -759,7 +772,7 @@ export default function WorldTourNavigator() {
             <h1
               className="text-2xl font-bold"
               style={{
-                backgroundImage: 'linear-gradient(to right, #FFD700, #FF4500, #8A2BE2)',
+                backgroundImage: 'linear-gradient(to right, #facc15, #ef4444, #a855f7)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
