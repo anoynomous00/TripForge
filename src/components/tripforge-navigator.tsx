@@ -58,6 +58,7 @@ import {
   FileText,
   Fingerprint,
   BookOpenCheck,
+  ArrowRight,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -1678,3 +1679,5 @@ export default function TripforgeNavigator() {
     </div>
   );
 }
+
+    
