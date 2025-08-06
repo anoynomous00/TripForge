@@ -113,6 +113,7 @@ import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import type { PlaceSuggesterOutput } from '@/ai/flows/place-suggester-flow';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -127,7 +128,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const CustomBikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" {...props}>
-      <path d="M499.5 224.2c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L358.9 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9l-19.5 33.8c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2L244 290.8c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#a6a6a6"/>
+      <path d="M499.5 224.2c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L358.9 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9l-19.5 33.8c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2L244 290.8c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4 1.8-3.6 2.9-6 2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#a6a6a6"/>
       <path d="M246.5 288.7l-4.5-8.6c-1.2-3-4.1-5.2-7.3-5.2h-24.8c-2.8 0-5.4-1.5-6.8-3.9L183.4 240c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9L108.4 275c-1.4 2.4-4 3.9-6.8 3.9H76.8c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9H224c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c.6-1.5.6-3.2 0-4.7z" fill="#d9d9d9"/>
       <path d="M243.6 169.8c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L102.9 192c-1.4-2.4-4-3.9-6.8-3.9H54.2c-2.8 0-5.4 1.5-6.8 3.9L27.9 227.3c-1.4 2.4-4 3.9-6.8 3.9H-3.7c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#404040"/>
       <path d="M375.9 313.1c-1.2-3-4.1-5.2-7.3-5.2h-35.4c-2.4 0-4.6 1.1-6 2.9l-22.7 28.5c-1.4 1.8-3.6 2.9-6 2.9h-36.9c-2.8 0-5.4-1.5-6.8-3.9L235.3 330c-1.4-2.4-4-3.9-6.8-3.9h-41.9c-2.8 0-5.4 1.5-6.8 3.9L160.1 365c-1.4 2.4-4 3.9-6.8 3.9h-24.8c-3.2 0-6.1 2.2-7.3 5.2l-4.9 12.3c-1.2 3-1.2 6.4 0 9.4l4.9 12.3c1.2 3 4.1 5.2 7.3 5.2h16.2c2.4 0 4.6-1.1 6-2.9l8-10.1c1.4-1.8 3.6-2.9 6-2.9h135.5c2.4 0 4.6 1.1 6 2.9l8 10.1c1.4 1.8 3.6 2.9 6 2.9h16.2c3.2 0 6.1-2.2 7.3-5.2l4.9-12.3c1.2-3.1 1.2-6.4 0-9.4l-4.5-8.6z" fill="#c1c1c1"/>
@@ -136,18 +137,18 @@ const CustomBikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   );
 
 const vehicles = [
-  { id: 'bike', name: 'Bike', icon: CustomBikeIcon, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
-  { id: 'scooty', name: 'Scooty', icon: Bike, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
-  { id: 'swift', name: 'Swift', icon: Car, pricing: { nonAc: { highway: 10, ghat: 11 }, ac: { highway: 12, ghat: 13 }, driver: 500 } },
-  { id: 'etios', name: 'Etios', icon: Car, pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
-  { id: 'eeco', name: 'Eeco', icon: Car, pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
-  { id: 'ertiga', name: 'Ertiga', icon: Car, pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
-  { id: 'innova', name: 'Innova', icon: Car, pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
-  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
-  { id: '18-seater', name: '18-Seater Bus', icon: Bus, pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
-  { id: '33-seater', name: '33-Seater Bus', icon: Bus, pricing: { nonAc: { highway: 32, ghat: 35 }, ac: { highway: 36, ghat: 39 }, driver: 800 } },
-  { id: 'flight', name: 'Flight', icon: Plane, pricing: null },
-];
+    { id: 'bike', name: 'Bike', icon: CustomBikeIcon, type: 'two-wheeler', pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
+    { id: 'scooty', name: 'Scooty', icon: Bike, type: 'two-wheeler', pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
+    { id: 'swift', name: 'Swift', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 10, ghat: 11 }, ac: { highway: 12, ghat: 13 }, driver: 500 } },
+    { id: 'etios', name: 'Etios', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
+    { id: 'eeco', name: 'Eeco', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
+    { id: 'ertiga', name: 'Ertiga', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
+    { id: 'innova', name: 'Innova', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
+    { id: 'mini-bus', name: 'Mini Bus', icon: Bus, type: 'four-wheeler', pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
+    { id: '18-seater', name: '18-Seater Bus', icon: Bus, type: 'four-wheeler', pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
+    { id: '33-seater', name: '33-Seater Bus', icon: Bus, type: 'four-wheeler', pricing: { nonAc: { highway: 32, ghat: 35 }, ac: { highway: 36, ghat: 39 }, driver: 800 } },
+    { id: 'flight', name: 'Flight', icon: Plane, type: 'flight', pricing: null },
+  ];
 
 type Booking = {
     id: string;
@@ -961,10 +962,11 @@ export default function TripforgeNavigator() {
   const { toast } = useToast();
   const isMounted = useIsMounted();
   const [activeView, setActiveView] = React.useState('trip-details');
+  const [activeVehicleTab, setActiveVehicleTab] = React.useState('four-wheeler');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [toCurrency, setToCurrency] = React.useState('INR');
   const [tripSuggestions, setTripSuggestions] = React.useState<SmartStaySuggestionsOutput | null>(null);
-  const [selectedVehicleId, setSelectedVehicleId] = React.useState<string | undefined>();
+  const [selectedVehicleId, setSelectedVehicleId] = React.useState<string | undefined>('swift');
   const [bookings, setBookings] = React.useState<Booking[]>([]);
 
   const form = useForm<FormValues>({
@@ -1056,6 +1058,9 @@ export default function TripforgeNavigator() {
   }
 
   const currencySymbol = currencySymbols[toCurrency] || '₹';
+
+  const twoWheelers = vehicles.filter(v => v.type === 'two-wheeler');
+  const fourWheelers = vehicles.filter(v => v.type === 'four-wheeler');
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -1334,18 +1339,43 @@ export default function TripforgeNavigator() {
                         <CardTitle className='flex items-center gap-2'><Car/> Select Transport</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='grid grid-cols-2 sm:grid-cols-3 gap-4'>
-                            {vehicles.map(v => (
-                                <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
-                                    <RadioGroupItem value={v.id} />
-                                    <v.icon className='w-6 h-6 text-muted-foreground'/>
-                                    <span>{v.name}</span>
-                                </Label>
-                            ))}
+                    <Tabs value={activeVehicleTab} onValueChange={setActiveVehicleTab}>
+                        <TabsList className="grid w-full grid-cols-3">
+                            <TabsTrigger value="two-wheeler">Two-Wheeler</TabsTrigger>
+                            <TabsTrigger value="four-wheeler">Four-Wheeler</TabsTrigger>
+                            <TabsTrigger value="flight">Flight</TabsTrigger>
+                        </TabsList>
+                        <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='mt-4'>
+                            <TabsContent value="two-wheeler" className='space-y-4'>
+                                {twoWheelers.map(v => (
+                                    <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
+                                        <RadioGroupItem value={v.id} />
+                                        <v.icon className='w-8 h-8 text-muted-foreground'/>
+                                        <span>{v.name}</span>
+                                    </Label>
+                                ))}
+                            </TabsContent>
+                            <TabsContent value="four-wheeler" className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                                {fourWheelers.map(v => (
+                                    <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
+                                        <RadioGroupItem value={v.id} />
+                                        <v.icon className='w-6 h-6 text-muted-foreground'/>
+                                        <span>{v.name}</span>
+                                    </Label>
+                                ))}
+                            </TabsContent>
                         </RadioGroup>
+                         <TabsContent value="flight">
+                            {/* The FlightBookingForm is now shown in the right column */}
+                            <div className="text-center text-muted-foreground p-8">
+                                <Plane className="mx-auto w-12 h-12 mb-4" />
+                                <p>Please fill out the flight booking details in the adjacent panel.</p>
+                            </div>
+                         </TabsContent>
+                    </Tabs>
                     </CardContent>
                 </Card>
-                {selectedVehicleId === 'flight' ? (
+                {activeVehicleTab === 'flight' ? (
                   <FlightBookingForm onBook={handleNewBooking}/>
                 ) : (
                   <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} onBook={handleNewBooking}/>
