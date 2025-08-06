@@ -734,7 +734,8 @@ function PlaceSuggester() {
                     <Label>What time of year are you traveling?</Label>
                     <RadioGroup value={season} onValueChange={setSeason} className="grid grid-cols-3 gap-2 pt-1">
                         {seasons.map(({ value, label, icon: Icon }) => (
-                             <Label key={value} className={cn('flex flex-col items-center justify-center rounded-lg border-2 p-3 cursor-pointer transition-all', season === value && 'border-primary ring-2 ring-primary')}>
+                             <Label key={value} htmlFor={value} className={cn('flex flex-col items-center justify-center rounded-lg border-2 p-3 cursor-pointer transition-all', season === value && 'border-primary ring-2 ring-primary')}>
+                                <RadioGroupItem value={value} id={value} className="sr-only" />
                                 <Icon className="w-8 h-8 mb-1" />
                                 {label}
                             </Label>
@@ -745,7 +746,8 @@ function PlaceSuggester() {
                     <Label>What kind of places do you like?</Label>
                      <RadioGroup value={preference} onValueChange={setPreference} className="grid grid-cols-2 lg:grid-cols-4 gap-2 pt-1">
                         {preferences.map(({ value, label, icon: Icon }) => (
-                             <Label key={value} className={cn('flex flex-col items-center justify-center rounded-lg border-2 p-3 cursor-pointer transition-all', preference === value && 'border-primary ring-2 ring-primary')}>
+                             <Label key={value} htmlFor={value} className={cn('flex flex-col items-center justify-center rounded-lg border-2 p-3 cursor-pointer transition-all', preference === value && 'border-primary ring-2 ring-primary')}>
+                                <RadioGroupItem value={value} id={value} className="sr-only" />
                                 <Icon className="w-8 h-8 mb-1" />
                                 {label}
                             </Label>
