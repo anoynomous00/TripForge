@@ -1062,7 +1062,6 @@ export default function TripforgeNavigator() {
     { id: 'offers', label: 'Offers', icon: BadgePercent },
     { id: 'tools', label: 'Translator (Assistant)', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
-    { id: 'navigation', label: 'Navigation', icon: Map },
     { id: 'place-suggester', label: 'Place Suggester', icon: Globe },
     { id: 'help', label: 'Help', icon: HelpCircle },
   ]
@@ -1338,6 +1337,15 @@ export default function TripforgeNavigator() {
                                 )}
                             </CardContent>
                         </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Live Map</CardTitle>
+                                <CardDescription>Your route will appear here. Note: A valid Google Maps API key is required for this map to function correctly.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <MyMap />
+                            </CardContent>
+                        </Card>
                 </div>
             </div>
           )}
@@ -1507,20 +1515,6 @@ export default function TripforgeNavigator() {
                         We're working on adding verified listings, dietary filters, detailed expense tracking, and more to make your trip planning even better.
                     </AlertDescription>
                  </Alert>
-            </div>
-          )}
-
-          {activeView === 'navigation' && (
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Live Map</CardTitle>
-                  <CardDescription>Explore your destination. Note: A valid Google Maps API key is required for this map to function correctly.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <MyMap />
-                </CardContent>
-              </Card>
             </div>
           )}
 
