@@ -28,15 +28,15 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
           <p className="mt-4 text-xl md:text-2xl text-neutral-300 max-w-2xl">
             Where Every Journey Begins with Confidence.
           </p>
+           <Button
+              onClick={onEnter}
+              size="lg"
+              className="mt-8 animate-fade-in-up bg-blue-600 hover:bg-blue-700"
+              style={{ animationDelay: '0.4s' }}
+            >
+              Start Planning Your Trip <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
         </div>
-        <Button
-          onClick={onEnter}
-          size="lg"
-          className="mt-8 animate-fade-in-up bg-blue-600 hover:bg-blue-700"
-          style={{ animationDelay: '0.4s' }}
-        >
-          Start Planning Your Trip <ArrowRight className="ml-2 h-5 w-5" />
-        </Button>
       </main>
     </div>
   );
