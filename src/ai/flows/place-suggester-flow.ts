@@ -15,6 +15,7 @@ import { z } from 'genkit';
 const PlaceSuggesterInputSchema = z.object({
   season: z.string().describe('The season for travel (e.g., "Summer", "Winter", "Monsoon").'),
   preference: z.string().describe('The user\'s preference for the type of place (e.g., "Beach", "Hill Station", "Historical", "Adventure").'),
+  location: z.string().optional().describe('The state or country to suggest places in (e.g., "Karnataka", "USA"). Defaults to India if not provided.'),
 });
 export type PlaceSuggesterInput = z.infer<typeof PlaceSuggesterInputSchema>;
 
@@ -37,9 +38,10 @@ const prompt = ai.definePrompt({
   name: 'placeSuggesterPrompt',
   input: { schema: PlaceSuggesterInputSchema },
   output: { schema: PlaceSuggesterOutputSchema },
-  prompt: `You are a travel expert specializing in Indian destinations.
+  prompt: `You are a travel expert.
 
-  Based on the user's desired season and preference, suggest 4 travel destinations in India.
+  Based on the user's desired season and preference, suggest 4 travel destinations in the specified location.
+  If no location is specified, default to suggesting places in India.
   
   For each destination, provide:
   1. The name of the place.
@@ -48,6 +50,9 @@ const prompt = ai.definePrompt({
 
   Season: {{{season}}}
   Preference: {{{preference}}}
+  {{#if location}}
+  Location: {{{location}}}
+  {{/if}}
   
   Format the response as a JSON object adhering to the PlaceSuggesterOutputSchema.`,
 });

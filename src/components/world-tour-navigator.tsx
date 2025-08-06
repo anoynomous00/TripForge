@@ -700,13 +700,14 @@ function PlaceSuggester() {
     const { toast } = useToast();
     const [season, setSeason] = React.useState('Summer');
     const [preference, setPreference] = React.useState('Beach');
+    const [location, setLocation] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [suggestions, setSuggestions] = React.useState<PlaceSuggesterOutput['suggestions']>([]);
   
     const handleSuggestPlaces = async () => {
       setIsLoading(true);
       setSuggestions([]);
-      const result = await generatePlaceSuggestions({ season, preference });
+      const result = await generatePlaceSuggestions({ season, preference, location });
       if (result.success && result.data) {
         setSuggestions(result.data.suggestions);
       } else {
@@ -725,7 +726,7 @@ function PlaceSuggester() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Globe/> Find Your Next Destination</CardTitle>
             <CardDescription>
-              Select a season and your travel style, and let our AI suggest the perfect spots for your next getaway.
+              Select your preferences and let our AI suggest the perfect spots for your next getaway.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -754,6 +755,15 @@ function PlaceSuggester() {
                         ))}
                     </RadioGroup>
                 </div>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="location-input">State or Country (Optional)</Label>
+                <Input 
+                    id="location-input" 
+                    placeholder="e.g., Karnataka, USA (Defaults to India)" 
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                />
             </div>
           </CardContent>
           <CardFooter>
