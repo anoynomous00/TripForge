@@ -4,7 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'WorldTour Navigator',
+  title: 'TRIPFORGE',
   description: 'Your ultimate travel planning companion',
 };
 

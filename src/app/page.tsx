@@ -4,7 +4,7 @@ import * as React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import WorldTourNavigator from '@/components/world-tour-navigator';
+import TripforgeNavigator from '@/components/tripforge-navigator';
 
 const karnatakaPlaces = [
   { src: 'https://placehold.co/600x401.png', alt: 'Hampi', hint: 'ancient ruins Hampi' },
@@ -50,7 +50,7 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
       </div>
       <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-5xl md:text-7xl font-extrabold font-headline tracking-tight animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          WorldTour
+          TRIPFORGE
         </h1>
         <p className="mt-4 text-xl md:text-2xl font-light max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           Where Every Journey Begins with Confidence.
@@ -70,5 +70,5 @@ export default function Home() {
     return <WelcomePage onEnter={() => setShowWelcome(false)} />;
   }
 
-  return <WorldTourNavigator />;
+  return <TripforgeNavigator />;
 }
