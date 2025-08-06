@@ -360,7 +360,6 @@ export default function WorldTourNavigator() {
     { id: 'plan', label: 'Plan Trip', icon: Waypoints },
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
-    { id: 'booking', label: 'Vehicle Booking', icon: ShieldCheck, disabled: true },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'tools', label: 'Tools', icon: Languages },
     { id: 'safety', label: 'Safety & More', icon: ShieldCheck },
@@ -800,17 +799,6 @@ export default function WorldTourNavigator() {
                     </AlertDescription>
                 </Alert>
             </div>
-          )}
-           {activeView === 'booking' && (
-             <div className="text-center">
-                 <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
-                    <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="A stylized illustration of a map and a car" className="mb-6 rounded-lg" data-ai-hint="online booking confirmation"/>
-                    <h2 className="text-2xl font-bold font-headline text-primary-dark">Vehicle Booking Coming Soon</h2>
-                    <p className="text-muted-foreground mt-2 max-w-md">
-                        This section will allow you to book your chosen vehicle directly through our partners. Stay tuned!
-                    </p>
-                </Card>
-             </div>
           )}
         </main>
       </SidebarInset>
