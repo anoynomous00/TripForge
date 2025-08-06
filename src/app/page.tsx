@@ -7,18 +7,9 @@ import { ArrowRight } from 'lucide-react';
 import TripforgeNavigator from '@/components/tripforge-navigator';
 import { cn } from '@/lib/utils';
 
-const karnatakaPlaces = [
-  { src: 'https://placehold.co/600x401.png', alt: 'Hampi', hint: 'ancient ruins Hampi' },
-  { src: 'https://placehold.co/600x402.png', alt: 'Mysore Palace', hint: 'Mysore Palace night' },
-  { src: 'https://placehold.co/600x403.png', alt: 'Coorg', hint: 'Coorg coffee plantation' },
-  { src: 'https://placehold.co/600x404.png', alt: 'Gokarna Beach', hint: 'Gokarna beach sunset' },
-  { src: 'https://placehold.co/600x405.png', alt: 'Jog Falls', hint: 'Jog Falls waterfall' },
-  { src: 'https://placehold.co/600x406.png', alt: 'Badami Caves', hint: 'Badami cave temples' },
-];
-
 function WelcomePage({ onEnter }: { onEnter: () => void }) {
   return (
-    <div className="relative flex flex-col items-center justify-center h-screen bg-black text-white overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center h-screen bg-transparent text-white overflow-hidden">
       <div className="absolute top-4 right-6 z-20">
         <p 
           className="font-headline text-2xl font-bold lowercase animate-long-fade-in"
@@ -33,22 +24,7 @@ function WelcomePage({ onEnter }: { onEnter: () => void }) {
           TRIPFORGE
         </p>
       </div>
-      <div className="absolute inset-0 z-0">
-        <div className="grid grid-cols-3 grid-rows-2 h-full w-full">
-          {karnatakaPlaces.map((place, index) => (
-            <div key={index} className="relative h-full w-full">
-              <Image
-                src={place.src}
-                alt={place.alt}
-                fill
-                className="object-cover opacity-40 transition-transform duration-500 ease-in-out group-hover:scale-105"
-                data-ai-hint={place.hint}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="absolute inset-0 bg-black/60"></div>
-      </div>
+     
       <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-5xl md:text-7xl font-extrabold font-headline tracking-tight animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           TRIPFORGE
