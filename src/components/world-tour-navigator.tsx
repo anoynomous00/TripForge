@@ -227,7 +227,7 @@ function Translator() {
 export default function WorldTourNavigator() {
   const { toast } = useToast();
   const isMounted = useIsMounted();
-  const [activeView, setActiveView] = React.useState('plan');
+  const [activeView, setActiveView] = React.useState('trip-details');
   const [tripResults, setTripResults] = React.useState<SmartStaySuggestionsOutput | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -357,7 +357,8 @@ export default function WorldTourNavigator() {
   }
 
   const menuItems = [
-    { id: 'plan', label: 'Plan Trip', icon: Waypoints },
+    { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
+    { id: 'traveler-preferences', label: 'Traveler Preferences', icon: Users },
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
     { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
     { id: 'budget', label: 'Budget', icon: Wallet },
@@ -416,162 +417,173 @@ export default function WorldTourNavigator() {
             </h2>
           </div>
 
-          {activeView === 'plan' && (
+          {(activeView === 'trip-details' || activeView === 'traveler-preferences') && (
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
                 <div>
                      <Card className="shadow-lg">
                         <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2 text-2xl">
-                            <Waypoints /> Your Adventure Details
+                           {activeView === 'trip-details' ? <Waypoints/> : <Users />}
+                           {activeView === 'trip-details' ? "Your Adventure Details" : "Traveler Preferences"}
                         </CardTitle>
-                        <CardDescription>Fill in the details below to get started. Choose your vehicle in the next step.</CardDescription>
+                        <CardDescription>
+                            {activeView === 'trip-details' 
+                                ? "Fill in the details below to get started." 
+                                : "Tell us about your group and preferences."}
+                        </CardDescription>
                         </CardHeader>
                         <CardContent>
                         <Form {...form}>
-                            <form onSubmit={(e) => { e.preventDefault(); setActiveView('vehicle'); }} className="space-y-6">
+                            <form onSubmit={(e) => { e.preventDefault(); setActiveView(activeView === 'trip-details' ? 'traveler-preferences' : 'vehicle'); }} className="space-y-6">
                             
-                            <div className='space-y-4'>
-                                <h3 className='font-semibold flex items-center gap-2'><MapPin /> Trip Details</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField
+                            {activeView === 'trip-details' && (
+                                <div className='space-y-4'>
+                                    <h3 className='font-semibold flex items-center gap-2'><MapPin /> Trip Details</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="currentLocation"
+                                        render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>From</FormLabel>
+                                            <FormControl>
+                                            <Input placeholder="e.g., New York, NY" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="destination"
+                                        render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>To</FormLabel>
+                                            <FormControl>
+                                            <Input placeholder="e.g., Los Angeles, CA" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                    </div>
+                                    <FormField
                                     control={form.control}
-                                    name="currentLocation"
+                                    name="tripStartDate"
                                     render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>From</FormLabel>
-                                        <FormControl>
-                                        <Input placeholder="e.g., New York, NY" {...field} />
-                                        </FormControl>
+                                        <FormItem className="flex flex-col">
+                                        <FormLabel>Start Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-full pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                                >
+                                                {field.value ? (
+                                                    format(field.value, 'PPP')
+                                                ) : (
+                                                    <span>Pick a date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
+                                                initialFocus
+                                            />
+                                            </PopoverContent>
+                                        </Popover>
                                         <FormMessage />
-                                    </FormItem>
+                                        </FormItem>
                                     )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="destination"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>To</FormLabel>
-                                        <FormControl>
-                                        <Input placeholder="e.g., Los Angeles, CA" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
+                                    />
                                 </div>
-                                <FormField
-                                control={form.control}
-                                name="tripStartDate"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                    <FormLabel>Start Date</FormLabel>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                                "w-full pl-3 text-left font-normal",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                            >
-                                            {field.value ? (
-                                                format(field.value, 'PPP')
-                                            ) : (
-                                                <span>Pick a date</span>
-                                            )}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
-                                            initialFocus
-                                        />
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                    </FormItem>
-                                )}
-                                />
-                            </div>
+                            )}
 
-                            <Separator />
-                             <div className='space-y-4'>
-                                <h3 className='font-semibold flex items-center gap-2'><Users /> Traveler Preferences</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField
+                            {activeView === 'traveler-preferences' && (
+                                <div className='space-y-4'>
+                                    <h3 className='font-semibold flex items-center gap-2'><Users /> Preferences</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="travelers"
+                                        render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Travelers</FormLabel>
+                                            <FormControl>
+                                            <Input type="number" placeholder="e.g., 2" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="budget"
+                                        render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Budget</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                <SelectValue placeholder="Select your budget" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="budget">Budget</SelectItem>
+                                                <SelectItem value="moderate">Moderate</SelectItem>
+                                                <SelectItem value="luxury">Luxury</SelectItem>
+                                            </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                    </div>
+                                    <FormField
+                                        control={form.control}
+                                        name="dailyTravelDistance"
+                                        render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Daily Miles</FormLabel>
+                                            <FormControl>
+                                            <Input type="number" placeholder="e.g., 300" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                    <FormField
                                     control={form.control}
-                                    name="travelers"
+                                    name="preferences"
                                     render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Travelers</FormLabel>
+                                        <FormItem>
+                                        <FormLabel>Lodging Preferences (Optional)</FormLabel>
                                         <FormControl>
-                                        <Input type="number" placeholder="e.g., 2" {...field} />
+                                            <Input placeholder="e.g., near beach, family-friendly, eco-stay" {...field} />
                                         </FormControl>
                                         <FormMessage />
-                                    </FormItem>
+                                        </FormItem>
                                     )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="budget"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Budget</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                            <SelectValue placeholder="Select your budget" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="budget">Budget</SelectItem>
-                                            <SelectItem value="moderate">Moderate</SelectItem>
-                                            <SelectItem value="luxury">Luxury</SelectItem>
-                                        </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
+                                    />
                                 </div>
-                                 <FormField
-                                    control={form.control}
-                                    name="dailyTravelDistance"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Daily Miles</FormLabel>
-                                        <FormControl>
-                                        <Input type="number" placeholder="e.g., 300" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="preferences"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Lodging Preferences (Optional)</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="e.g., near beach, family-friendly, eco-stay" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                    </FormItem>
-                                )}
-                                />
+                            )}
+
+                            <div className='flex justify-end !mt-8'>
+                                <Button type="submit" size="lg">
+                                    {activeView === 'trip-details' ? 'Next: Preferences' : 'Next: Choose Vehicle'}
+                                    <ChevronRight className="ml-2 h-4 w-4" />
+                                </Button>
                             </div>
-                                                        
-                            <Button type="submit" className="w-full !mt-8" size="lg">
-                                Next: Choose Vehicle <ChevronRight className="ml-2 h-4 w-4" />
-                            </Button>
                             </form>
                         </Form>
                         </CardContent>
@@ -632,7 +644,7 @@ export default function WorldTourNavigator() {
                                     )}
                                 />
                                 <div className="flex justify-between items-center !mt-8">
-                                    <Button variant="outline" onClick={() => setActiveView('plan')}>Back</Button>
+                                    <Button variant="outline" onClick={() => setActiveView('traveler-preferences')}>Back</Button>
                                     <Button type="submit" size="lg" disabled={isSubmitting}>
                                         {isSubmitting ? (
                                             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...</>
