@@ -11,7 +11,7 @@ export async function generateSuggestions(
 ): Promise<{ success: boolean; data?: SmartStaySuggestionsOutput; error?: string }> {
   try {
     const result = await getSmartStaySuggestions(input);
-    if (!result || !result.suggestedStops) {
+    if (!result || !result.suggestedStops || !result.routeCities) {
       return { success: false, error: 'Could not generate suggestions. The model returned an unexpected response.' };
     }
     return { success: true, data: result };

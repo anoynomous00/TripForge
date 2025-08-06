@@ -672,6 +672,7 @@ export default function WorldTourNavigator() {
   const [activeView, setActiveView] = React.useState('trip-details');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [toCurrency, setToCurrency] = React.useState('INR');
+  const [tripSuggestions, setTripSuggestions] = React.useState<SmartStaySuggestionsOutput | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -687,6 +688,28 @@ export default function WorldTourNavigator() {
   });
   
   const selectedVehicleId = form.watch('vehicle');
+
+  const handleTripDetailsSubmit = async () => {
+    setIsSubmitting(true);
+    setTripSuggestions(null);
+    const values = form.getValues();
+    const input = {
+      ...values,
+      tripStartDate: format(values.tripStartDate, 'yyyy-MM-dd'),
+    };
+    const result = await generateSuggestions(input);
+    if (result.success && result.data) {
+      setTripSuggestions(result.data);
+      setActiveView('traveler-preferences');
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Could not get route',
+        description: result.error,
+      });
+    }
+    setIsSubmitting(false);
+  }
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -784,7 +807,7 @@ export default function WorldTourNavigator() {
                         </CardHeader>
                         <CardContent>
                         <Form {...form}>
-                            <form onSubmit={(e) => { e.preventDefault(); setActiveView(activeView === 'trip-details' ? 'traveler-preferences' : 'vehicle'); }} className="space-y-6">
+                            <form onSubmit={(e) => { e.preventDefault(); activeView === 'trip-details' ? handleTripDetailsSubmit() : setActiveView('vehicle'); }} className="space-y-6">
                             
                             {activeView === 'trip-details' && (
                                 <div className='space-y-4'>
@@ -929,15 +952,45 @@ export default function WorldTourNavigator() {
                             )}
 
                             <div className='flex justify-end !mt-8'>
-                                <Button type="submit" size="lg">
-                                    {activeView === 'trip-details' ? 'Next: Preferences' : 'Next: Choose Vehicle'}
-                                    <ChevronRight className="ml-2 h-4 w-4" />
+                                <Button type="submit" size="lg" disabled={isSubmitting}>
+                                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Getting Route...</> : (
+                                    <>
+                                     {activeView === 'trip-details' ? 'Next: Preferences' : 'Next: Choose Vehicle'}
+                                     <ChevronRight className="ml-2 h-4 w-4" />
+                                    </>
+                                    )}
                                 </Button>
                             </div>
                             </form>
                         </Form>
                         </CardContent>
                     </Card>
+                     { (tripSuggestions || isSubmitting) && activeView === 'trip-details' && (
+                        <Card className="mt-8 shadow-lg">
+                           <CardHeader>
+                               <CardTitle className="font-headline flex items-center gap-2 text-2xl"><Waypoints/> Suggested Route</CardTitle>
+                               <CardDescription>Major cities and towns you'll pass through on your way to {form.getValues().destination}.</CardDescription>
+                           </CardHeader>
+                            <CardContent>
+                                {isSubmitting ? (
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-3/4" />
+                                        <Skeleton className="h-4 w-1/2" />
+                                        <Skeleton className="h-4 w-2/3" />
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-wrap gap-x-4 gap-y-2 items-center">
+                                       {tripSuggestions?.routeCities.map((city, index) => (
+                                         <React.Fragment key={city}>
+                                           <div className="font-medium">{city}</div>
+                                           {index < tripSuggestions.routeCities.length - 1 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                                         </React.Fragment>
+                                       ))}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
                 <div className="space-y-8">
                      <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
