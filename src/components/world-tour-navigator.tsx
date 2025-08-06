@@ -93,6 +93,7 @@ import { generateSuggestions } from '@/app/actions';
 import type { SmartStaySuggestionsOutput } from '@/ai/flows/smart-stay-suggestions';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
+import { Switch } from './ui/switch';
 
 const formSchema = z.object({
   currentLocation: z.string().min(2, { message: 'Current location is required.' }),
@@ -108,16 +109,16 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const vehicles = [
-  { id: 'bike', name: 'Bike', icon: Bike, pricing: { highway: 7, ghat: 7, driver: 300 } },
-  { id: 'scooty', name: 'Scooty', icon: Bike, pricing: { highway: 7, ghat: 7, driver: 300 } },
-  { id: 'swift', name: 'Swift', icon: Car, pricing: { highway: 10, ghat: 11, driver: 500 } },
-  { id: 'etios', name: 'Etios', icon: Car, pricing: { highway: 10, ghat: 10.5, driver: 500 } },
-  { id: 'eeco', name: 'Eeco', icon: Car, pricing: { highway: 10, ghat: 10.5, driver: 500 } },
-  { id: 'ertiga', name: 'Ertiga', icon: Car, pricing: { highway: 15, ghat: 16, driver: 500 } },
-  { id: 'innova', name: 'Innova', icon: Car, pricing: { highway: 15, ghat: 16, driver: 500 } },
-  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, pricing: { highway: 22, ghat: 24, driver: 800 } },
-  { id: '18-seater', name: '18-Seater Bus', icon: Bus, pricing: { highway: 22, ghat: 24, driver: 800 } },
-  { id: '33-seater', name: '33-Seater Bus', icon: Bus, pricing: { highway: 32, ghat: 35, driver: 800 } },
+  { id: 'bike', name: 'Bike', icon: Bike, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
+  { id: 'scooty', name: 'Scooty', icon: Bike, pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
+  { id: 'swift', name: 'Swift', icon: Car, pricing: { nonAc: { highway: 10, ghat: 11 }, ac: { highway: 12, ghat: 13 }, driver: 500 } },
+  { id: 'etios', name: 'Etios', icon: Car, pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
+  { id: 'eeco', name: 'Eeco', icon: Car, pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
+  { id: 'ertiga', name: 'Ertiga', icon: Car, pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
+  { id: 'innova', name: 'Innova', icon: Car, pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
+  { id: 'mini-bus', name: 'Mini Bus', icon: Bus, pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
+  { id: '18-seater', name: '18-Seater Bus', icon: Bus, pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
+  { id: '33-seater', name: '33-Seater Bus', icon: Bus, pricing: { nonAc: { highway: 32, ghat: 35 }, ac: { highway: 36, ghat: 39 }, driver: 800 } },
   { id: 'flight', name: 'Flight', icon: Plane, pricing: null },
 ];
 
@@ -231,6 +232,7 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
   const [kms, setKms] = React.useState(100);
   const [days, setDays] = React.useState(1);
   const [roadType, setRoadType] = React.useState<'highway' | 'ghat'>('highway');
+  const [isAc, setIsAc] = React.useState(false);
   const [totalFare, setTotalFare] = React.useState(0);
 
   const selectedVehicle = React.useMemo(() => {
@@ -243,10 +245,11 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
       return;
     }
     const { pricing } = selectedVehicle;
-    const rate = pricing[roadType];
+    const pricingTier = isAc && pricing.ac ? pricing.ac : pricing.nonAc;
+    const rate = pricingTier[roadType];
     const fare = (kms * rate) + (days * pricing.driver);
     setTotalFare(fare);
-  }, [kms, days, roadType, selectedVehicle]);
+  }, [kms, days, roadType, isAc, selectedVehicle]);
   
   if (!selectedVehicle || !selectedVehicle.pricing) {
     return (
@@ -287,6 +290,12 @@ function FareCalculator({ vehicleId }: { vehicleId: string | undefined }) {
                     <Label className='flex items-center gap-2'><CalendarDays /> Days</Label>
                     <Input type="number" value={days} onChange={(e) => setDays(Number(e.target.value))} />
                 </div>
+                {selectedVehicle.pricing.ac && (
+                 <div className="flex items-center space-x-2 pt-6">
+                    <Switch id="ac-switch" checked={isAc} onCheckedChange={setIsAc}/>
+                    <Label htmlFor="ac-switch">With A/C</Label>
+                  </div>
+                )}
             </div>
             <Separator />
             <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
@@ -715,7 +724,7 @@ export default function WorldTourNavigator() {
                                                 <span className="font-bold mt-2 text-center">{vehicle.name}</span>
                                                  {vehicle.pricing && (
                                                     <span className='text-xs text-muted-foreground mt-1'>
-                                                        ₹{vehicle.pricing.highway}/km
+                                                        ₹{vehicle.pricing.nonAc.highway}/km
                                                     </span>
                                                  )}
                                                 </Label>
@@ -902,5 +911,3 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
-
-    
