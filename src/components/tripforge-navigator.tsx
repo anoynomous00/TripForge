@@ -142,17 +142,17 @@ const CustomBikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   );
 
 const vehicles = [
-    { id: 'bike', name: 'Bike', icon: CustomBikeIcon, type: 'two-wheeler', pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
-    { id: 'scooty', name: 'Scooty', icon: Bike, type: 'two-wheeler', pricing: { nonAc: { highway: 7, ghat: 7 }, driver: 300 } },
-    { id: 'swift', name: 'Swift', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 10, ghat: 11 }, ac: { highway: 12, ghat: 13 }, driver: 500 } },
-    { id: 'etios', name: 'Etios', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
-    { id: 'eeco', name: 'Eeco', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 10, ghat: 10.5 }, ac: { highway: 12, ghat: 12.5 }, driver: 500 } },
-    { id: 'ertiga', name: 'Ertiga', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
-    { id: 'innova', name: 'Innova', icon: Car, type: 'four-wheeler', pricing: { nonAc: { highway: 15, ghat: 16 }, ac: { highway: 17, ghat: 18 }, driver: 500 } },
-    { id: 'mini-bus', name: 'Mini Bus', icon: Bus, type: 'four-wheeler', pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
-    { id: '18-seater', name: '18-Seater Bus', icon: Bus, type: 'four-wheeler', pricing: { nonAc: { highway: 22, ghat: 24 }, ac: { highway: 25, ghat: 27 }, driver: 800 } },
-    { id: '33-seater', name: '33-Seater Bus', icon: Bus, type: 'four-wheeler', pricing: { nonAc: { highway: 32, ghat: 35 }, ac: { highway: 36, ghat: 39 }, driver: 800 } },
-    { id: 'flight', name: 'Flight', icon: Plane, type: 'flight', pricing: null },
+    { id: 'bike', name: 'Bike', icon: CustomBikeIcon, type: 'two-wheeler' },
+    { id: 'scooty', name: 'Scooty', icon: Bike, type: 'two-wheeler' },
+    { id: 'swift', name: 'Swift', icon: Car, type: 'four-wheeler' },
+    { id: 'etios', name: 'Etios', icon: Car, type: 'four-wheeler' },
+    { id: 'eeco', name: 'Eeco', icon: Car, type: 'four-wheeler' },
+    { id: 'ertiga', name: 'Ertiga', icon: Car, type: 'four-wheeler' },
+    { id: 'innova', name: 'Innova', icon: Car, type: 'four-wheeler' },
+    { id: 'mini-bus', name: 'Mini Bus', icon: Bus, type: 'four-wheeler' },
+    { id: '18-seater', name: '18-Seater Bus', icon: Bus, type: 'four-wheeler' },
+    { id: '33-seater', name: '33-Seater Bus', icon: Bus, type: 'four-wheeler' },
+    { id: 'flight', name: 'Flight', icon: Plane, type: 'flight' },
   ];
 
 type Booking = {
@@ -344,111 +344,58 @@ function Translator() {
     )
 }
 
-function FareCalculator({ vehicleId, currencySymbol, onBook }: { vehicleId: string | undefined, currencySymbol: string, onBook: (booking: Omit<Booking, 'id'>) => void }) {
-  const [kms, setKms] = React.useState(100);
-  const [roadType, setRoadType] = React.useState<'highway' | 'ghat'>('highway');
-  const [isAc, setIsAc] = React.useState(false);
-  const [totalFare, setTotalFare] = React.useState(0);
-  const [passengerName, setPassengerName] = React.useState('');
-  const [mobileNumber, setMobileNumber] = React.useState('');
-
+function ZoomcarBookingCard({ vehicleId }: { vehicleId: string | undefined }) {
   const selectedVehicle = React.useMemo(() => {
     return vehicles.find(v => v.id === vehicleId);
   }, [vehicleId]);
 
-  React.useEffect(() => {
-    if (!selectedVehicle || !selectedVehicle.pricing) {
-      setTotalFare(0);
-      return;
-    }
-    const { pricing } = selectedVehicle;
-    const pricingTier = isAc && pricing.ac ? pricing.ac : pricing.nonAc;
-    const rate = pricingTier[roadType];
-    const fare = (kms * rate) + pricing.driver;
-    setTotalFare(fare);
-  }, [kms, roadType, isAc, selectedVehicle]);
-
-  const handleBookNow = () => {
-    if (!selectedVehicle || !passengerName || !mobileNumber) {
-        // Basic validation
-        alert('Please fill in passenger name and mobile number.');
-        return;
-    }
-    onBook({
-        vehicleName: selectedVehicle.name,
-        passengerName,
-        mobileNumber,
-        amount: totalFare,
-        currencySymbol,
-    });
-    
-    // Clear inputs after booking
-    setPassengerName('');
-    setMobileNumber('');
+  const handleRedirect = () => {
+    window.open('https://www.zoomcar.com', '_blank');
   };
-  
-  if (!selectedVehicle || !selectedVehicle.pricing) {
+
+  if (!selectedVehicle) {
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Calculator /> Fare Calculator</CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-center text-muted-foreground h-48">
-                <p>Please select a vehicle to calculate the fare.</p>
-            </CardContent>
-        </Card>
-    )
+      <Card>
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Car /> Vehicle Booking</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center text-muted-foreground h-48">
+            <p>Please select a vehicle to proceed.</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
     <Card>
-        <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Calculator /> Fare Calculator</CardTitle>
-            <CardDescription>Estimate your travel cost for the <span className='font-bold text-primary'>{selectedVehicle.name}</span>.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-            <div className='grid grid-cols-2 gap-4'>
-                <div className="space-y-2">
-                    <Label className='flex items-center gap-2'><Waypoints/> Road Type</Label>
-                    <Select onValueChange={(value: 'highway' | 'ghat') => setRoadType(value)} defaultValue={roadType}>
-                        <SelectTrigger><SelectValue/></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="highway">Highway</SelectItem>
-                            <SelectItem value="ghat">Ghat</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                 <div className="space-y-2">
-                    <Label className='flex items-center gap-2'><Waypoints /> Kilometers</Label>
-                    <Input type="number" value={kms} onChange={(e) => setKms(Number(e.target.value))}/>
-                </div>
-                {selectedVehicle.pricing.ac && (
-                 <div className="flex items-center space-x-2 pt-6 col-span-2">
-                    <Switch id="ac-switch" checked={isAc} onCheckedChange={setIsAc}/>
-                    <Label htmlFor="ac-switch">With A/C</Label>
-                  </div>
-                )}
-            </div>
-            <Separator />
-            <div className="flex justify-between items-center p-3 rounded-lg border-2 border-primary bg-primary/5">
-                <span className="font-bold text-lg">Estimated Total Fare</span>
-                <span className="text-2xl text-primary">
-                    <span className='font-normal'>{currencySymbol}</span><span className='font-bold'>{totalFare.toLocaleString()}</span>
-                </span>
-            </div>
-             <div className="space-y-4">
-                <Label>Passenger Details</Label>
-                 <Input placeholder="Passenger Name" value={passengerName} onChange={e => setPassengerName(e.target.value)}/>
-                 <Input placeholder="Mobile Number" type="tel" value={mobileNumber} onChange={e => setMobileNumber(e.target.value)}/>
-            </div>
-            <p className='text-xs text-muted-foreground'>This is an estimate. It includes driver charges but excludes tolls, taxes, and other fees.</p>
-        </CardContent>
-         <CardFooter>
-            <Button className="w-full" onClick={handleBookNow} disabled={!passengerName || !mobileNumber}>Book Now</Button>
-        </CardFooter>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><Car /> Book Your {selectedVehicle.name}</CardTitle>
+        <CardDescription>
+          You will be redirected to our partner Zoomcar to complete your booking.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6 text-center">
+         <Image 
+            src={`https://placehold.co/400x200.png`} 
+            data-ai-hint={`${selectedVehicle.name} car`}
+            alt={selectedVehicle.name}
+            width={400}
+            height={200}
+            className="rounded-lg object-cover w-full aspect-video mx-auto"
+         />
+         <p className="text-muted-foreground">
+           Click the button below to browse available vehicles and finalize your rental on Zoomcar.com.
+         </p>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full" onClick={handleRedirect}>
+            Book on Zoomcar <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </CardFooter>
     </Card>
-  )
+  );
 }
+
 
 function StudentOfferCard() {
   const [idCard, setIdCard] = React.useState<File | null>(null);
@@ -1558,7 +1505,7 @@ export default function TripforgeNavigator() {
                 {activeVehicleTab === 'flight' ? (
                   <FlightBookingForm onBook={handleNewBooking}/>
                 ) : (
-                  <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} onBook={handleNewBooking}/>
+                  <ZoomcarBookingCard vehicleId={selectedVehicleId} />
                 )}
              </div>
           )}
