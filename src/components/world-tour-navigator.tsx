@@ -730,7 +730,7 @@ export default function WorldTourNavigator() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <Globe className="h-8 w-8 text-primary" />
+            <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="WorldTour Logo" width={32} height={32} />
             <h1 className="text-xl font-bold font-headline text-primary-dark">
               WorldTour
             </h1>
