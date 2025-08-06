@@ -21,10 +21,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <SidebarProvider>
-          {children}
-        </SidebarProvider>
-        <Toaster />
+        <div className="relative z-10">
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
+          <Toaster />
+        </div>
       </body>
     </html>
   );
