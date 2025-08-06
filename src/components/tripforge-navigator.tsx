@@ -976,7 +976,15 @@ function FlightBookingForm({ onBook }: { onBook: (booking: Omit<Booking, 'id'>) 
   )
 }
 
-function NavigationPage({ currentLocation, destination }: { currentLocation: string; destination: string; }) {
+function NavigationPage({ 
+  currentLocation, 
+  destination,
+  tripSuggestions,
+}: { 
+  currentLocation: string; 
+  destination: string; 
+  tripSuggestions: SmartStaySuggestionsOutput | null;
+}) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [details, setDetails] = React.useState<RouteDetailsOutput | null>(null);
@@ -1004,7 +1012,19 @@ function NavigationPage({ currentLocation, destination }: { currentLocation: str
 
   const handleNavigate = () => {
     if (currentLocation && destination) {
-        const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentLocation)}&destination=${encodeURIComponent(destination)}`;
+        let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentLocation)}&destination=${encodeURIComponent(destination)}`;
+        
+        // Use the first suggested route's cities as waypoints
+        const waypoints = tripSuggestions?.suggestedRoutes?.[0]?.routeCities;
+        
+        if (waypoints && waypoints.length > 2) {
+            // Exclude origin and destination if they are in the waypoints list
+            const intermediateWaypoints = waypoints.filter(city => city !== currentLocation && city !== destination);
+            if (intermediateWaypoints.length > 0) {
+              url += `&waypoints=${intermediateWaypoints.map(encodeURIComponent).join('|')}`;
+            }
+        }
+        
         window.open(url, '_blank');
     } else {
         toast({
@@ -1485,7 +1505,7 @@ export default function TripforgeNavigator() {
           )}
           
           {activeView === 'navigation' && (
-            <NavigationPage currentLocation={currentLocation} destination={destination} />
+            <NavigationPage currentLocation={currentLocation} destination={destination} tripSuggestions={tripSuggestions} />
           )}
 
           {activeView === 'place-suggester' && (
