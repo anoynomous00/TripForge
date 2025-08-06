@@ -666,10 +666,7 @@ export default function WorldTourNavigator() {
   const { toast } = useToast();
   const isMounted = useIsMounted();
   const [activeView, setActiveView] = React.useState('trip-details');
-  const [tripResults, setTripResults] = React.useState<SmartStaySuggestionsOutput | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-  const [formValues, setFormValues] = React.useState<FormValues | null>(null);
   const [toCurrency, setToCurrency] = React.useState('INR');
 
   const form = useForm<FormValues>({
@@ -687,121 +684,30 @@ export default function WorldTourNavigator() {
   
   const selectedVehicleId = form.watch('vehicle');
 
-  React.useEffect(() => {
-    if (!isMounted) return;
-    try {
-      const savedTrip = localStorage.getItem('worldtour_trip');
-      if (savedTrip) {
-        const parsedTrip = JSON.parse(savedTrip);
-        form.reset({
-          ...parsedTrip.formValues,
-          tripStartDate: new Date(parsedTrip.formValues.tripStartDate),
-        });
-        setTripResults(parsedTrip.tripResults);
-        setFormValues({
-          ...parsedTrip.formValues,
-          tripStartDate: new Date(parsedTrip.formValues.tripStartDate),
-        });
-        toast({
-          title: 'Trip Loaded',
-          description: 'Your previously saved trip has been loaded.',
-        });
-      }
-    } catch (e) {
-      console.error('Failed to load trip from localStorage', e);
-    }
-  }, [isMounted, form, toast]);
-
-  const handleSaveTrip = () => {
-    if (!formValues) {
-      toast({
-        variant: "destructive",
-        title: "Nothing to save",
-        description: "Please plan a trip first before saving.",
-      });
-      return;
-    }
-    try {
-      const tripData = { formValues, tripResults };
-      localStorage.setItem('worldtour_trip', JSON.stringify(tripData));
-      toast({
-        title: "Trip Saved!",
-        description: "Your trip has been saved to your browser's local storage.",
-      });
-    } catch (e) {
-      console.error('Failed to save trip to localStorage', e);
-      toast({
-        variant: "destructive",
-        title: "Save Failed",
-        description: "Could not save your trip.",
-      });
-    }
-  };
-
-  const handleLoadTrip = () => {
-    try {
-      const savedTrip = localStorage.getItem('worldtour_trip');
-      if (savedTrip) {
-        const parsedTrip = JSON.parse(savedTrip);
-        form.reset({
-          ...parsedTrip.formValues,
-          tripStartDate: new Date(parsedTrip.formValues.tripStartDate),
-        });
-        setTripResults(parsedTrip.tripResults);
-        setFormValues({
-          ...parsedTrip.formValues,
-          tripStartDate: new Date(parsedTrip.formValues.tripStartDate),
-        });
-        toast({
-          title: "Trip Loaded",
-          description: "Your trip has been loaded from local storage.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "No Saved Trip",
-          description: "We couldn't find a saved trip in your browser.",
-        });
-      }
-    } catch (e) {
-      console.error('Failed to load trip from localStorage', e);
-    }
-  };
-
-  const handleCalendarSync = () => {
-    toast({
-      title: 'Sync to Calendar',
-      description: 'This feature allows syncing your trip dates and stays to your Google Calendar.',
-    });
-  };
-
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    setError(null);
-    setTripResults(null);
-    setFormValues(values);
-    setActiveView('results');
+    setActiveView('lodge-booking');
 
     const input = {
       ...values,
       tripStartDate: format(values.tripStartDate, 'yyyy-MM-dd'),
     };
 
-    const result = await generateSuggestions(input);
-
-    if (result.success && result.data) {
-      setTripResults(result.data);
-    } else {
-      setError(result.error || 'An unknown error occurred.');
-    }
+    // This is where the AI call happens, but we are not displaying the results.
+    // We can keep the call to potentially use the data later, or remove it.
+    await generateSuggestions(input); 
+    
     setIsSubmitting(false);
+    toast({
+      title: "Trip Details Confirmed!",
+      description: "You can now proceed with your lodge booking.",
+    });
   }
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
     { id: 'traveler-preferences', label: 'Traveler Preferences', icon: Users },
     { id: 'vehicle', label: 'Vehicle Selection', icon: Car },
-    { id: 'results', label: 'Route & Stays', icon: Map, disabled: !formValues },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'offers', label: 'Offers', icon: BadgePercent },
@@ -843,12 +749,7 @@ export default function WorldTourNavigator() {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className='flex-col gap-2'>
-           <Button variant="outline" size="sm" onClick={handleLoadTrip}>
-                <FolderOpen className="mr-2 h-4 w-4" /> Load Trip
-            </Button>
-            <Button variant="default" size="sm" onClick={handleSaveTrip}>
-                <Save className="mr-2 h-4 w-4" /> Save Trip
-            </Button>
+           {/* Save/Load buttons removed */}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
@@ -1146,96 +1047,6 @@ export default function WorldTourNavigator() {
             </div>
           )}
 
-
-          {activeView === 'results' && (
-            <div className="space-y-8">
-                {error && (
-                    <Alert variant="destructive">
-                        <Info className="h-4 w-4" />
-                        <AlertTitle>Error</AlertTitle>
-                        <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                )}
-                
-                {(isSubmitting || tripResults || formValues) ? (
-                <>
-                    <Card className="shadow-lg">
-                        <CardHeader>
-                            <CardTitle className="font-headline flex items-center gap-2"><Map/> Google Maps Overview</CardTitle>
-                            <CardDescription>A look at your route with traffic, toll, and weather info.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {isSubmitting ? <Skeleton className="w-full h-[250px] rounded-lg" /> : 
-                            <div className='space-y-4'>
-                                <Image src="https://placehold.co/1200x600.png" alt="Map of the route" width={1200} height={600} className="rounded-lg border" data-ai-hint="map route" />
-                                <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-center'>
-                                    <div className='bg-secondary p-3 rounded-lg'>
-                                        <p className='text-sm font-medium text-muted-foreground'>Traffic</p>
-                                        <p className='font-bold flex items-center justify-center gap-2'><TrafficCone className='w-4 h-4 text-primary'/> Light</p>
-                                    </div>
-                                    <div className='bg-secondary p-3 rounded-lg'>
-                                        <p className='text-sm font-medium text-muted-foreground'>Est. Tolls</p>
-                                        <p className='font-bold flex items-center justify-center gap-2'><DollarSign className='w-4 h-4 text-primary'/> $34.50</p>
-                                    </div>
-                                    <div className='bg-secondary p-3 rounded-lg'>
-                                        <p className='text-sm font-medium text-muted-foreground'>Weather</p>
-                                        <p className='font-bold flex items-center justify-center gap-2'><CloudSun className='w-4 h-4 text-primary'/> Sunny</p>
-                                    </div>
-                                    <div className='bg-secondary p-3 rounded-lg'>
-                                        <p className='text-sm font-medium text-muted-foreground'>Route</p>
-                                        <p className='font-bold flex items-center justify-center gap-2'><Car className='w-4 h-4 text-primary'/> Fastest</p>
-                                    </div>
-                                </div>
-                            </div>
-                            }
-                        </CardContent>
-                    </Card>
-
-                    <Card className="shadow-lg">
-                        <CardHeader>
-                            <CardTitle className="font-headline flex items-center gap-2"><BedDouble /> Smart Stay Suggestions</CardTitle>
-                            <CardDescription>AI-powered recommendations for your overnight stays.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {isSubmitting ? (
-                                <div className="space-y-4">
-                                    <Skeleton className="h-24 w-full" />
-                                    <Skeleton className="h-24 w-full" />
-                                </div>
-                            ) : tripResults && tripResults.suggestedStops.length > 0 ? (
-                                <div className="space-y-4">
-                                    {tripResults.suggestedStops.map((stop, index) => (
-                                        <div key={index} className="p-4 border rounded-lg bg-background">
-                                            <div className="flex justify-between items-start">
-                                                <div>
-                                                    <h3 className="font-bold text-lg font-headline flex items-center gap-2"><MapPin className="w-5 h-5 text-primary"/> {stop.location}</h3>
-                                                    <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1"><Clock className="w-4 h-4"/> Est. Arrival: {format(new Date(stop.estimatedArrivalTime), 'EEE, MMM d, yyyy @ h:mm a')}</p>
-                                                </div>
-                                                <Button size="sm" variant="outline" className="hidden sm:flex" onClick={handleCalendarSync}><CalendarIcon className="mr-2 h-4 w-4"/> Add to Calendar</Button>
-                                            </div>
-                                            <Separator className="my-3" />
-                                            <p className="text-sm">{stop.reason}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p>No stay suggestions available for this route.</p>
-                            )}
-                        </CardContent>
-                    </Card>
-                </>
-                ) : (
-                <Card className="shadow-lg text-center h-full flex flex-col justify-center items-center p-8 bg-card">
-                    <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="A stylized illustration of a map and a car" className="mb-6 rounded-lg" data-ai-hint="travel planning journey"/>
-                    <h2 className="text-2xl font-bold font-headline text-primary-dark">No Trip Planned Yet</h2>
-                    <p className="text-muted-foreground mt-2 max-w-md">
-                        Go to the "Plan Trip" section to start your journey. Your results will appear here once generated.
-                    </p>
-                </Card>
-                )}
-            </div>
-          )}
-
           {activeView === 'budget' && (
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card>
@@ -1313,3 +1124,5 @@ export default function WorldTourNavigator() {
     </div>
   );
 }
+
+    
