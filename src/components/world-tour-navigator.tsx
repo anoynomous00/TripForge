@@ -735,6 +735,7 @@ export default function WorldTourNavigator() {
 
   const menuItems = [
     { id: 'trip-details', label: 'Trip Details', icon: Waypoints },
+    { id: 'vehicle-selection', label: 'Vehicle Selection', icon: Car },
     { id: 'lodge-booking', label: 'Lodge Booking', icon: BedDouble },
     { id: 'budget', label: 'Budget', icon: Wallet },
     { id: 'offers', label: 'Offers', icon: BadgePercent },
@@ -755,7 +756,14 @@ export default function WorldTourNavigator() {
         <SidebarHeader>
           <div className="flex items-center gap-3 p-2">
             <Image src="https://www.gstatic.com/images/branding/product/1x/maps_64dp.png" alt="TRIPFORGE Logo" width={40} height={40} />
-            <h1 className="text-2xl font-bold">
+            <h1
+              className="text-2xl font-bold"
+              style={{
+                backgroundImage: 'linear-gradient(to right, #FFD700, #FF4500, #8A2BE2)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               TRIPFORGE
             </h1>
           </div>
@@ -1008,6 +1016,30 @@ export default function WorldTourNavigator() {
             </div>
           )}
 
+          {activeView === 'vehicle-selection' && (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                <div className='lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8'>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className='flex items-center gap-2'><Car/> Select Vehicle</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='space-y-2'>
+                                {vehicles.map(v => (
+                                    <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
+                                        <RadioGroupItem value={v.id} />
+                                        <v.icon className='w-6 h-6 text-muted-foreground'/>
+                                        <span>{v.name}</span>
+                                    </Label>
+                                ))}
+                            </RadioGroup>
+                        </CardContent>
+                    </Card>
+                    <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
+                </div>
+             </div>
+          )}
+
           {activeView === 'lodge-booking' && (
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
                 <LodgeBookingCard currencySymbol={currencySymbol} />
@@ -1044,25 +1076,6 @@ export default function WorldTourNavigator() {
 
           {activeView === 'budget' && (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                <div className='lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8'>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className='flex items-center gap-2'><Car/> Select Vehicle</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <RadioGroup value={selectedVehicleId} onValueChange={setSelectedVehicleId} className='space-y-2'>
-                                {vehicles.map(v => (
-                                    <Label key={v.id} className={cn('flex items-center gap-3 p-3 rounded-lg border-2 has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer')}>
-                                        <RadioGroupItem value={v.id} />
-                                        <v.icon className='w-6 h-6 text-muted-foreground'/>
-                                        <span>{v.name}</span>
-                                    </Label>
-                                ))}
-                            </RadioGroup>
-                        </CardContent>
-                    </Card>
-                    <FareCalculator vehicleId={selectedVehicleId} currencySymbol={currencySymbol} />
-                </div>
                 <CurrencyConverter toCurrency={toCurrency} onToCurrencyChange={setToCurrency} />
              </div>
           )}
