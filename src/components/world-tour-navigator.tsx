@@ -162,7 +162,7 @@ const currencySymbols: { [key: string]: string } = {
   USD: '$',
   EUR: '€',
   GBP: '£',
-  INR: '₹',
+  INR: 'Rs. ',
 };
 
 
@@ -833,7 +833,7 @@ function PlaceSuggester() {
             {suggestions.map((place, index) => (
               <Card key={index} className="flex flex-col">
                 <Image
-                  src={`https://placehold.co/600x400.png`}
+                  src={`https://t0.gstatic.com/images?q=tbn:ANd9GcQ1r9oV2nKZ2Y8aC4a_c_a8C8q8aC4a_c_a8C8q8aC4a_c&s`}
                   data-ai-hint={place.imageHint}
                   alt={place.name}
                   width={600}
@@ -1055,7 +1055,7 @@ export default function TripforgeNavigator() {
     return null;
   }
 
-  const currencySymbol = currencySymbols[toCurrency] || '₹';
+  const currencySymbol = currencySymbols[toCurrency] || 'Rs. ';
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
