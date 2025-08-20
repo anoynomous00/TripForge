@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
 1.  **Estimated Time Taken**: A realistic travel time estimate.
 2.  **Weather Report**: A general weather forecast for the journey.
 3.  **Number of Tolls**: An approximate count of toll booths.
-4.  **Toll Price**: An estimated total cost for tolls in the local currency.
+4.  **Toll Price**: An estimated total cost for tolls in Indian Rupees (using the '₹' symbol).
 
 Return the response in a structured JSON format.`,
 });
