@@ -22,7 +22,7 @@ const RouteDetailsOutputSchema = z.object({
   timeTaken: z.string().describe('The estimated time to reach the destination (e.g., "approx. 8 hours 30 minutes").'),
   weatherReport: z.string().describe('A brief weather forecast for the route (e.g., "Clear skies with a slight chance of rain near the destination.").'),
   numberOfTolls: z.number().describe('The estimated number of tolls along the route.'),
-  tollPrice: z.string().describe('The estimated total price for all tolls, including currency (e.g., "approx. ₹450").'),
+  tollPrice: z.string().describe('The estimated total price for all tolls, including currency (e.g., "approx. Rs.450").'),
 });
 export type RouteDetailsOutput = z.infer<typeof RouteDetailsOutputSchema>;
 
@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
 1.  **Estimated Time Taken**: A realistic travel time estimate.
 2.  **Weather Report**: A general weather forecast for the journey.
 3.  **Number of Tolls**: An approximate count of toll booths.
-4.  **Toll Price**: An estimated total cost for tolls in Indian Rupees (using the '₹' symbol).
+4.  **Toll Price**: An estimated total cost for tolls in Indian Rupees (using the 'Rs.' symbol).
 
 Return the response in a structured JSON format.`,
 });
